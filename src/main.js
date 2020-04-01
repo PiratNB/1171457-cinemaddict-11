@@ -269,7 +269,7 @@ const filmListContainerElement = siteMainElement.querySelector(`.films-list__con
 
 for (let i = 0; i < FILM_COUNT; i++) {
   render(filmListContainerElement, createFilmCardTemplate(), `beforeend`);
-};
+}
 
 const filmListElement = siteMainElement.querySelector(`.films-list`);
 
@@ -283,13 +283,13 @@ const topRatedElement = filmsElement.querySelector(`.top-rated`);
 
 for (let i = 0; i < TOP_RATED_COUNT; i++) {
   render(topRatedElement, createFilmCardTemplate(), `beforeend`);
-};
+}
 
 const mostCommentedElement = filmsElement.querySelector(`.most-commented`);
 
 for (let i = 0; i < MOST_COMMENTED_COUNT; i++) {
   render(mostCommentedElement, createFilmCardTemplate(), `beforeend`);
-};
+}
 
 const siteFooter = document.querySelector(`.footer`);
 const siteFooterStat = siteFooter.querySelector(`.footer__statistics`);
