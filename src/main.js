@@ -1,5 +1,3 @@
-"use strict";
-
 const FILM_COUNT = 5;
 const TOP_RATED_COUNT = 2;
 const MOST_COMMENTED_COUNT = 2;
@@ -13,7 +11,7 @@ const createProfileUserTemplate = () => {
   );
 };
 
-const createMenuTemplate = () => {
+const createNavigationTemplate = () => {
   return (
     `<nav class="main-navigation">
     <div class="main-navigation__items">
@@ -23,9 +21,13 @@ const createMenuTemplate = () => {
       <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">8</span></a>
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>
+  </nav>`
+  );
+};
 
-  <ul class="sort">
+const createSortTemplate = () => {
+  return (
+    `<ul class="sort">
     <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
     <li><a href="#" class="sort__button">Sort by date</a></li>
     <li><a href="#" class="sort__button">Sort by rating</a></li>
@@ -262,7 +264,8 @@ const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = document.querySelector(`.header`);
 
 render(siteHeaderElement, createProfileUserTemplate(), `beforeend`);
-render(siteMainElement, createMenuTemplate(), `beforeend`);
+render(siteMainElement, createNavigationTemplate(), `beforeend`);
+render(siteMainElement, createSortTemplate(), `beforeend`);
 render(siteMainElement, createFilmsListTemplate(), `beforeend`);
 
 const filmListContainerElement = siteMainElement.querySelector(`.films-list__container`);
