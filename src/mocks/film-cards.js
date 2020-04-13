@@ -1,14 +1,14 @@
 import {getRandomElementOfArray, getRandomizedReducedArray} from "../utils";
 import {DESCRIPTIONS, COMMENT_EMOTIONS, ACTOR_NAMES, GENRES, COUNTRIES, WRITER_NAMES, DIRECTOR_NAMES, FILM_NAMES, POSTER_IMAGES} from "./consts";
 
-const millisecondsInYear = 1000 * 60 * 60 * 24 * 30 * 12;
+const MILLISECONDS_IN_YEAR = 1000 * 60 * 60 * 24 * 30 * 12;
 
 const generateRandomComment = () => {
   return {
     message: getRandomElementOfArray(DESCRIPTIONS),
     emotion: getRandomElementOfArray(COMMENT_EMOTIONS),
     author: getRandomElementOfArray(ACTOR_NAMES),
-    postDate: Date.now() - Math.round(Math.random() * millisecondsInYear)
+    postDate: Date.now() - Math.round(Math.random() * MILLISECONDS_IN_YEAR)
   };
 };
 
@@ -30,16 +30,16 @@ const generateRandomFilm = () => {
     director: getRandomElementOfArray(DIRECTOR_NAMES),
     writers: getRandomizedReducedArray(WRITER_NAMES, Math.ceil(Math.random() * 3)),
     actors: getRandomizedReducedArray(ACTOR_NAMES, Math.ceil(Math.random() * 5) + 5),
-    releaseDate: Date.now() - Math.round(Math.random() * 50 * millisecondsInYear),
+    releaseDate: Date.now() - Math.round(Math.random() * 50 * MILLISECONDS_IN_YEAR),
     runtime: `${Math.ceil(Math.random() * 3)}h ${Math.round(Math.random() * 59)}m`,
     country: getRandomElementOfArray(COUNTRIES),
     genres: getRandomizedReducedArray(GENRES, Math.ceil(Math.random() * 3)),
     description: getRandomizedReducedArray(DESCRIPTIONS, Math.ceil(Math.random() * 5)).join(` `),
     ageRating: Math.round(Math.random() * 21),
     comments: generateComments(Math.round(Math.random() * 5)),
-    isFavorite: Boolean(Math.round(Math.random())),
-    isAtWatchlist: Boolean(Math.round(Math.random())),
-    isWatched: Boolean(Math.round(Math.random()))
+    isFavorite: Math.random() > 0.5,
+    isAtWatchlist: Math.random() > 0.5,
+    isWatched: Math.random() > 0.5
   };
 };
 
@@ -50,5 +50,3 @@ export const generateFilmBase = (filmsCount) => {
   }
   return films;
 };
-
-export {COMMENT_EMOTIONS};

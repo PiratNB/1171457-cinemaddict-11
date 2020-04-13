@@ -1,4 +1,4 @@
-const FILMS_COUNT = Math.round(Math.random() * 5) + 20;
+const FILMS_COUNT = Math.round(Math.random() * 500);
 const FILMS_TO_RENDER = 5;
 const TOP_RATED_COUNT = 2;
 const MOST_COMMENTED_COUNT = 2;
@@ -13,6 +13,7 @@ import {createTopRatedMostCommented} from "./components/rate-commented";
 // import {createFilmDetails} from "./components/film-details";
 import {renderElement} from "./utils";
 import {generateFilmBase} from "./mocks/film-cards";
+import {createStat} from "./components/film-stat";
 
 const renderFilmsPack = (container, filmsPack) => {
   filmsPack.forEach((it) => {
@@ -53,13 +54,18 @@ renderElement(filmsSection, createTopRatedMostCommented(), `afterend`); // Ре�
 renderElement(filmsSection, createTopRatedMostCommented(`Top rated`));
 renderElement(filmsSection, createTopRatedMostCommented(`Most commented`));
 
-const topRatedFilmsListContainer = filmsSection.querySelectorAll(`.films-list--extra .films-list__container`)[0];
-renderFilmsPack(topRatedFilmsListContainer, films.slice(0).sort((a, b) => b.rating - a.rating).slice(0, TOP_RATED_COUNT));
+const FilmsListContainer = filmsSection.querySelectorAll(`.films-list--extra .films-list__container`);
 
-const mostCommentedFilmsListContainer = filmsSection.querySelectorAll(`.films-list--extra .films-list__container`)[1];
-renderFilmsPack(mostCommentedFilmsListContainer, films.slice(0).sort((a, b) => b.comments.length - a.comments.length).slice(0, MOST_COMMENTED_COUNT));
+const filmsSortedByRating = films.slice().sort((a, b) => b.rating - a.rating);
+const filmsSortedByCommentsCount = films.slice().sort((a, b) => b.comments.length - a.comments.length);
+
+const topRatedFilmsListContainer = FilmsListContainer[0];
+renderFilmsPack(topRatedFilmsListContainer, filmsSortedByRating.slice(0, TOP_RATED_COUNT));
+
+const mostCommentedFilmsListContainer = FilmsListContainer[1];
+renderFilmsPack(mostCommentedFilmsListContainer, filmsSortedByCommentsCount.slice(0, MOST_COMMENTED_COUNT));
 
 const siteFooterStat = document.querySelector(`.footer__statistics`);
-renderElement(siteFooterStat, `<p>${films.length} movies inside</p>`); // Рендер статистики
+renderElement(siteFooterStat, createStat(films)); // Рендер статистики
 
 // renderElement(document.querySelector(`body`), createFilmDetails(films[0]));
