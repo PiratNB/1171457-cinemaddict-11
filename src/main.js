@@ -1,56 +1,71 @@
-const FILM_COUNT = 5;
+const FILMS_COUNT = Math.round(Math.random() * 500);
+const FILMS_TO_RENDER = 5;
 const TOP_RATED_COUNT = 2;
 const MOST_COMMENTED_COUNT = 2;
 
-import {createProfileUserTemplate} from "./components/profile-user.js";
-import {createNavigationTemplate} from "./components/navigation.js";
-import {createSortTemplate} from "./components/sort.js";
-import {createFilmsListTemplate} from "./components/film-list.js";
-import {createFilmCardTemplate} from "./components/film-card.js";
-import {createBtnShowMoreTemplate} from "./components/btn-show-more.js";
-import {createTopRatedMostCommentedTemplate} from "./components/rate-commented.js";
-import {createFooterStatisticsTemplate} from "./components/footer-statistics.js";
-import {createFilmDetailsTemplate} from "./components/film-details.js";
+import {createProfileUser} from "./components/profile-user";
+import {createNavigation} from "./components/navigation";
+import {createSort} from "./components/sort";
+import {createFilmsList} from "./components/film-list";
+import {createFilmCard} from "./components/film-card";
+import {createBtnShowMore} from "./components/btn-show-more";
+import {createTopRatedMostCommented} from "./components/rate-commented";
+// import {createFilmDetails} from "./components/film-details";
+import {renderElement} from "./utils";
+import {generateFilmBase} from "./mocks/film-cards";
+import {createStat} from "./components/film-stat";
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const renderFilmsPack = (container, filmsPack) => {
+  filmsPack.forEach((it) => {
+    renderElement(container, createFilmCard(it)); // Рендер карточек фильмов
+  });
 };
+
+const films = generateFilmBase(FILMS_COUNT);
+let filmCardsRendered = Math.min(films.length, FILMS_TO_RENDER);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = document.querySelector(`.header`);
 
-render(siteHeaderElement, createProfileUserTemplate(), `beforeend`);
-render(siteMainElement, createNavigationTemplate(), `beforeend`);
-render(siteMainElement, createSortTemplate(), `beforeend`);
-render(siteMainElement, createFilmsListTemplate(), `beforeend`);
+renderElement(siteHeaderElement, createProfileUser(films.filter((it) => it.isWatched).length)); // Рендер аватарки и статуса пользователя
+renderElement(siteMainElement, createNavigation(films)); // Рендер главного меню
+renderElement(siteMainElement, createSort()); // Рендер панели сортировки
+renderElement(siteMainElement, createFilmsList()); // Рендер секции с фильмами
+const filmsSection = siteMainElement.querySelector(`.films`);
 
 const filmListContainerElement = siteMainElement.querySelector(`.films-list__container`);
 
-for (let i = 0; i < FILM_COUNT; i++) {
-  render(filmListContainerElement, createFilmCardTemplate(), `beforeend`);
+renderFilmsPack(filmListContainerElement, films.slice(0, FILMS_TO_RENDER));
+if (films.length > filmCardsRendered) {
+  renderElement(filmsSection.querySelector(`.films-list`), createBtnShowMore()); // Рендер кнопки Loadmore
+  const loadMoreButton = filmsSection.querySelector(`.films-list__show-more`);
+  loadMoreButton.addEventListener(`click`, () => {
+    renderFilmsPack(filmListContainerElement, films.slice(filmCardsRendered, filmCardsRendered + FILMS_TO_RENDER));
+    filmCardsRendered = (filmCardsRendered + FILMS_TO_RENDER) > films.length ? films.length : (filmCardsRendered + FILMS_TO_RENDER);
+    if (filmCardsRendered === films.length) {
+      loadMoreButton.classList.add(`visually-hidden`);
+    }
+  });
 }
 
-const filmListElement = siteMainElement.querySelector(`.films-list`);
+renderElement(filmsSection, createTopRatedMostCommented(), `afterend`); // Рендер секции с самыми популярными и комментируемыми фильмами
 
-render(filmListElement, createBtnShowMoreTemplate(), `beforeend`);
+// Рендер Top rated и Моst commented фильмов
+renderElement(filmsSection, createTopRatedMostCommented(`Top rated`));
+renderElement(filmsSection, createTopRatedMostCommented(`Most commented`));
 
-const filmsElement = siteMainElement.querySelector(`.films`);
+const FilmsListContainer = filmsSection.querySelectorAll(`.films-list--extra .films-list__container`);
 
-render(filmsElement, createTopRatedMostCommentedTemplate(), `beforeend`);
+const filmsSortedByRating = films.slice().sort((a, b) => b.rating - a.rating);
+const filmsSortedByCommentsCount = films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
-const topRatedElement = filmsElement.querySelector(`.top-rated`);
+const topRatedFilmsListContainer = FilmsListContainer[0];
+renderFilmsPack(topRatedFilmsListContainer, filmsSortedByRating.slice(0, TOP_RATED_COUNT));
 
-for (let i = 0; i < TOP_RATED_COUNT; i++) {
-  render(topRatedElement, createFilmCardTemplate(), `beforeend`);
-}
+const mostCommentedFilmsListContainer = FilmsListContainer[1];
+renderFilmsPack(mostCommentedFilmsListContainer, filmsSortedByCommentsCount.slice(0, MOST_COMMENTED_COUNT));
 
-const mostCommentedElement = filmsElement.querySelector(`.most-commented`);
+const siteFooterStat = document.querySelector(`.footer__statistics`);
+renderElement(siteFooterStat, createStat(films)); // Рендер статистики
 
-for (let i = 0; i < MOST_COMMENTED_COUNT; i++) {
-  render(mostCommentedElement, createFilmCardTemplate(), `beforeend`);
-}
-
-const siteFooter = document.querySelector(`.footer`);
-const siteFooterStat = siteFooter.querySelector(`.footer__statistics`);
-render(siteFooterStat, createFooterStatisticsTemplate(), `beforeend`);
-render(siteFooter, createFilmDetailsTemplate(), `afterend`);
+// renderElement(document.querySelector(`body`), createFilmDetails(films[0]));

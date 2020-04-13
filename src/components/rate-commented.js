@@ -1,17 +1,9 @@
-export const createTopRatedMostCommentedTemplate = () => {
+export const createTopRatedMostCommented = (title) => {
   return (
-    `<section class="films-list--extra">
-    <h2 class="films-list__title">Top rated</h2>
-
-    <div class="films-list__container top-rated">
-    </div>
-  </section>
-
-  <section class="films-list--extra">
-    <h2 class="films-list__title">Most commented</h2>
-
-    <div class="films-list__container most-commented">
-    </div>
-  </section>`
+    ` <section class="films-list${title ? `--extra` : ``}">
+        <h2 class="films-list__title${title ? `` : ` visually-hidden`}">${title ? title : `All movies. Upcoming`}</h2>
+        <div class="films-list__container">
+        </div>
+      </section>`
   );
 };
