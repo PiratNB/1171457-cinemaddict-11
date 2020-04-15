@@ -3,17 +3,17 @@ const FILMS_TO_RENDER = 5;
 const TOP_RATED_COUNT = 2;
 const MOST_COMMENTED_COUNT = 2;
 
-import {createProfileUser} from "./components/profile-user";
-import {createNavigation} from "./components/navigation";
-import {createSort} from "./components/sort";
-import {createFilmsList} from "./components/film-list";
-import {createFilmCard} from "./components/film-card";
-import {createBtnShowMore} from "./components/btn-show-more";
-import {createTopRatedMostCommented} from "./components/rate-commented";
-// import {createFilmDetails} from "./components/film-details";
+import ProfileUser from "./components/profile-user";
+import Navigation from "./components/navigation";
+import Sort from "./components/sort";
+import FilmList from "./components/film-list";
+import FilmCard from "./components/film-card";
+import BtnShowMore from "./components/btn-show-more";
+import RateCommented from "./components/rate-commented";
+import FilmStat from "./components/film-stat";
+// import FilmDetails from "./components/film-details";
 import {renderElement} from "./utils";
 import {generateFilmBase} from "./mocks/film-cards";
-import {createStat} from "./components/film-stat";
 
 const renderFilmsPack = (container, filmsPack) => {
   filmsPack.forEach((it) => {
