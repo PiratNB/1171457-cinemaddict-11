@@ -1,4 +1,6 @@
-export const createNavigation = (films) => {
+import {createElement} from "../utils";
+
+const createNavigation = (films) => {
   return (
     `<nav class="main-navigation">
     <div class="main-navigation__items">
@@ -11,3 +13,27 @@ export const createNavigation = (films) => {
   </nav>`
   );
 };
+
+export default class Navigation {
+  constructor(films) {
+    this._films = films;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createNavigation(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

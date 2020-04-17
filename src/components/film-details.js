@@ -1,6 +1,7 @@
 import {COMMENT_EMOTIONS} from "../mocks/consts";
+import {createElement} from "../utils";
 
-export const createFilmDetails = ({name, posterImage, rating, originalName, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating, comments, isFavorite, isAtWatchlist, isWatched}) => {
+const createFilmDetails = ({name, posterImage, rating, originalName, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating, comments, isFavorite, isAtWatchlist, isWatched}) => {
   return `
     <section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -109,3 +110,27 @@ export const createFilmDetails = ({name, posterImage, rating, originalName, dire
     </section>
     `;
 };
+
+export default class FilmDetails {
+  constructor(film) {
+    this._film = film;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetails(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
