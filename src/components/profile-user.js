@@ -1,48 +1,25 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
-const getUserLevel = (filmsCount) => {
-  if (filmsCount > 0 && filmsCount <= 10) {
-    return `Novice`;
-  } else if (filmsCount > 10 && filmsCount <= 20) {
-    return `Fan`;
-  } else if (filmsCount > 20) {
-    return `Movie Buff`;
-  }
-  return ``;
-};
-
-const createProfileUser = (filmsCount) => {
+const createProfileUser = (userLevel) => {
   return `
     <section class="header__profile profile">
-      <p class="profile__rating">${getUserLevel(filmsCount)}</p>
+      <p class="profile__rating">${userLevel}</p>
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
     </section>
     `;
 };
 
-export default class ProfileUser {
+export default class ProfileUser extends AbstractComponent {
   constructor(filmsCount) {
+    super();
     this._filmsCount = filmsCount;
     this._userLevel = ``;
 
-    this._element = null;
     this.updateUserLevel();
   }
 
   getTemplate() {
-    return createProfileUser(this._filmsCount);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createProfileUser(this._userLevel);
   }
 
   updateUserLevel() {

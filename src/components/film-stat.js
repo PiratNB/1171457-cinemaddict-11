@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createStat = (films) => {
   return (
@@ -6,26 +6,14 @@ const createStat = (films) => {
   );
 };
 
-export default class FilmStat {
+export default class FilmStat extends AbstractComponent {
   constructor(films) {
-    this._films = films;
+    super();
 
-    this._element = null;
+    this._films = films;
   }
 
   getTemplate() {
     return createStat(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
