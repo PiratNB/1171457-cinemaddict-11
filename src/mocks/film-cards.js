@@ -1,4 +1,4 @@
-import {getRandomElementOfArray, getRandomizedReducedArray} from "../utils";
+import {getRandomElementOfArray, getRandomizedReducedArray} from "../utils/utils";
 import {DESCRIPTIONS, COMMENT_EMOTIONS, ACTOR_NAMES, GENRES, COUNTRIES, WRITER_NAMES, DIRECTOR_NAMES, FILM_NAMES, POSTER_IMAGES} from "./consts";
 
 const MILLISECONDS_IN_YEAR = 1000 * 60 * 60 * 24 * 30 * 12;

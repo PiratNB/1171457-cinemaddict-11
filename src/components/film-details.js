@@ -1,5 +1,5 @@
 import {COMMENT_EMOTIONS} from "../mocks/consts";
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createFilmDetails = ({name, posterImage, rating, originalName, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating, comments, isFavorite, isAtWatchlist, isWatched}) => {
   return `
@@ -111,26 +111,18 @@ const createFilmDetails = ({name, posterImage, rating, originalName, director, w
     `;
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractComponent {
   constructor(film) {
-    this._film = film;
+    super();
 
-    this._element = null;
+    this._film = film;
   }
 
   getTemplate() {
     return createFilmDetails(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setCloseClickHandler(handler) {
+    this.getElement().querySelector(`button.film-details__close-btn`).addEventListener(`click`, handler);
   }
 }
