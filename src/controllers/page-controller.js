@@ -2,7 +2,7 @@ const FILMS_TO_RENDER = 5;
 const FILMS_EXTRA_TO_RENDER = 2;
 
 import Navigation from "../components/navigation";
-import Sort from "../components/sort";
+import Sort, {SORT_TYPE} from "../components/sort";
 import FilmList from "../components/film-list";
 import RateCommented from "../components/rate-commented";
 import FilmCard from "../components/film-card";
@@ -14,6 +14,7 @@ export default class PageController {
   constructor(container, films) {
     this._container = container;
     this._films = films;
+    this._sortedFilms = this._films;
     this._mainControl = new Navigation(this._films);
     this._sortingControl = new Sort();
     this._filmsSection = new FilmList();
@@ -59,6 +60,20 @@ export default class PageController {
     renderElement(this._filmsSection.getElement(), this._allFilmsList);
   }
 
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SORT_TYPE.DEFAULT:
+        this._sortedFilms = this._films;
+        break;
+      case SORT_TYPE.DATE:
+        this._sortedFilms = this._films.slice().sort((a, b) => b.releaseDate - a.releaseDate);
+        break;
+      case SORT_TYPE.RATING:
+        this._sortedFilms = this._films.slice().sort((a, b) => b.rating - a.rating);
+        break;
+    }
+  }
+
   _renderFullBoard() {
     this._allFilmsList = new RateCommented();
     renderElement(this._filmsSection.getElement(), this._allFilmsList);
@@ -68,13 +83,19 @@ export default class PageController {
     if (this._films.length > this._filmCardsRendered) {
       renderElement(this._allFilmsList.getElement(), this._loadmoreButton);
       this._loadmoreButton.setClickHandler(() => {
-        this._renderFilmsPack(allFilmsListContainer, this._films.slice(this._filmCardsRendered, this._filmCardsRendered + FILMS_TO_RENDER));
-        this._filmCardsRendered = (this._filmCardsRendered + FILMS_TO_RENDER) > this._films.length ? this._films.length : (this._filmCardsRendered + FILMS_TO_RENDER);
-        if (this._filmCardsRendered === this._films.length) {
+        this._renderFilmsPack(allFilmsListContainer, this._sortedFilms.slice(this._filmCardsRendered, this._filmCardsRendered + FILMS_TO_RENDER));
+        this._filmCardsRendered = (this._filmCardsRendered + FILMS_TO_RENDER) > this._sortedFilms.length ? this._sortedFilms.length : (this._filmCardsRendered + FILMS_TO_RENDER);
+        if (this._filmCardsRendered === this._sortedFilms.length) {
           this._loadmoreButton.hide();
         }
       });
     }
+
+    this._sortingControl.setSortTypeChooseHandler((sortTypeChosen) => {
+      allFilmsListContainer.innerHTML = ``;
+      this._sortFilms(sortTypeChosen);
+      this._renderFilmsPack(allFilmsListContainer, this._sortedFilms.slice(0, this._filmCardsRendered));
+    });
 
     this._topRatedFilmsList = new RateCommented(`Top rated`);
     renderElement(this._filmsSection.getElement(), this._topRatedFilmsList);
