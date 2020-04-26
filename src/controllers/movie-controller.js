@@ -3,37 +3,45 @@ import FilmDetails from "../components/film-details";
 import {removeElement, renderElement} from "../utils/render";
 
 export default class MovieController {
-  constructor(container, film, onDataChange) {
+  constructor(container, film, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
 
     this._filmData = film;
     this._filmCard = null;
     this._filmPopup = null;
+
+    this._closePopup = this._closePopup.bind(this);
+    this._onEscKeydown = this._onEscKeydown.bind(this);
   }
 
   get filmData() {
     return this._filmData;
   }
 
+  _onEscKeydown(keydownEvt) {
+    if (keydownEvt.code === `Escape`) {
+      this._closePopup();
+    }
+  }
+
+  _closePopup() {
+    removeElement(this._filmPopup);
+    this._filmPopup = null;
+    document.removeEventListener(`keydown`, this._onEscKeydown);
+  }
+
   _createCard() {
     this._filmCard = new FilmCard(this._filmData);
 
     this._filmCard.setClickHandler(() => {
+      this._onViewChange();
       this._filmPopup = new FilmDetails(this._filmData);
-      const closePopup = () => {
-        removeElement(this._filmPopup);
-        document.removeEventListener(`keydown`, onEscKeydown);
-      };
-      const onEscKeydown = (keydownEvt) => {
-        if (keydownEvt.code === `Escape`) {
-          closePopup();
-        }
-      };
 
       renderElement(document.querySelector(`body`), this._filmPopup);
-      this._filmPopup.setCloseClickHandler(closePopup);
-      document.addEventListener(`keydown`, onEscKeydown);
+      this._filmPopup.setCloseClickHandler(this._closePopup);
+      document.addEventListener(`keydown`, this._onEscKeydown);
     });
 
     this._filmCard.setWatchlistButtonClickHandler((evt) => {
@@ -66,6 +74,12 @@ export default class MovieController {
 
     this._createCard();
     parentContainer.replaceChild(this._filmCard.getElement(), oldCard);
+  }
+
+  setDefaultView() {
+    if (this._filmPopup) {
+      this._closePopup();
+    }
   }
 
   removeCard() {

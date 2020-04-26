@@ -23,13 +23,14 @@ export default class PageController {
     this._loadmoreButton = new BtnShowMore();
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
     this._filmRenderedCount = null;
     this._filmsRendered = [];
   }
 
   _renderFilmsPack(container, filmsPack) {
     filmsPack.forEach((film) => {
-      const filmController = new MovieController(container, film, this._onDataChange);
+      const filmController = new MovieController(container, film, this._onDataChange, this._onViewChange);
       this._filmsRendered.push(filmController);
       filmController.render();
     });
@@ -74,6 +75,10 @@ export default class PageController {
     }
     this._films[index] = newData;
     filmComponent.rerenderCard(newData);
+  }
+
+  _onViewChange() {
+    this._filmsRendered.forEach((it) => it.setDefaultView());
   }
 
   _renderFullBoard() {
