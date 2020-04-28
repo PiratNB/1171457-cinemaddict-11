@@ -13,14 +13,14 @@ export default class MovieController {
     this._filmPopup = null;
 
     this._closePopup = this._closePopup.bind(this);
-    this._onEscKeydown = this._onEscKeydown.bind(this);
+    this._handleEscKeydown = this._handleEscKeydown.bind(this);
   }
 
   get filmData() {
     return this._filmData;
   }
 
-  _onEscKeydown(keydownEvt) {
+  _handleEscKeydown(keydownEvt) {
     if (keydownEvt.code === `Escape`) {
       this._closePopup();
     }
@@ -29,7 +29,7 @@ export default class MovieController {
   _closePopup() {
     removeElement(this._filmPopup);
     this._filmPopup = null;
-    document.removeEventListener(`keydown`, this._onEscKeydown);
+    document.removeEventListener(`keydown`, this._handleEscKeydown);
   }
 
   _createCard() {
@@ -41,7 +41,7 @@ export default class MovieController {
 
       renderElement(document.querySelector(`body`), this._filmPopup);
       this._filmPopup.setCloseClickHandler(this._closePopup);
-      document.addEventListener(`keydown`, this._onEscKeydown);
+      document.addEventListener(`keydown`, this._handleEscKeydown);
     });
 
     this._filmCard.setWatchlistButtonClickHandler((evt) => {
