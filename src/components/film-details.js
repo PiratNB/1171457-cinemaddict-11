@@ -1,6 +1,7 @@
 /* eslint-disable no-invalid-this */
 import {COMMENT_EMOTIONS} from "../mocks/consts";
 import AbstractSmartComponent from "./abstract-smart-component";
+import moment from "moment";
 
 export default class FilmDetails extends AbstractSmartComponent {
   constructor(film) {
@@ -15,6 +16,7 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   getTemplate() {
     const releaseDate = new Date(this._film.releaseDate).toLocaleDateString(`en-GB`, {day: `numeric`, month: `long`, year: `numeric`});
+    const filmDuration = `${moment.duration(this._film.runtime, `minutes`).hours()}h ${moment.duration(this._film.runtime, `minutes`).minutes()}m`;
     const filmGenres = this._film.genres.map((it) => `<span class="film-details__genre">${it}</span>`).join(` `);
     const commentsList = this._film.comments.map((it) => `
                 <li class="film-details__comment">
@@ -25,7 +27,7 @@ export default class FilmDetails extends AbstractSmartComponent {
                     <p class="film-details__comment-text">${it.message}</p>
                     <p class="film-details__comment-info">
                       <span class="film-details__comment-author">${it.author}</span>
-                      <span class="film-details__comment-day">${new Date(it.postDate).toLocaleString()}</span>
+                      <span class="film-details__comment-day">${moment(it.postDate).fromNow()}</span>
                       <button class="film-details__comment-delete">Delete</button>
                     </p>
                   </div>
@@ -79,7 +81,7 @@ export default class FilmDetails extends AbstractSmartComponent {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${this._film.runtime}</td>
+                  <td class="film-details__cell">${filmDuration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>

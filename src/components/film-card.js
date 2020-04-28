@@ -1,8 +1,9 @@
 import AbstractComponent from "./abstract-component";
-
+import moment from "moment";
 
 const createFilmCard = ({name, posterImage, rating, releaseDate, runtime, genres, description, comments, isFavorite, isAtWatchlist, isWatched}) => {
   const releaseYear = new Date(releaseDate).getFullYear();
+  const filmDuration = `${moment.duration(runtime, `minutes`).hours()}h ${moment.duration(runtime, `minutes`).minutes()}m`;
   const shortDescription = description.length > 140 ? `${description.slice(0, 139)}&#8230` : description;
 
   return (
@@ -11,7 +12,7 @@ const createFilmCard = ({name, posterImage, rating, releaseDate, runtime, genres
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${releaseYear}</span>
-      <span class="film-card__duration">${runtime}</span>
+      <span class="film-card__duration">${filmDuration}</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="./images/posters/${posterImage}" alt="${name}" class="film-card__poster">

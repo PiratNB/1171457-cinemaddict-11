@@ -17,7 +17,7 @@ const generateComments = (count) => {
   for (let i = 0; i < count; i++) {
     comments.push(generateRandomComment());
   }
-  return comments;
+  return comments.sort((a, b) => a.postDate - b.postDate);
 };
 
 const generateRandomFilm = () => {
@@ -31,7 +31,7 @@ const generateRandomFilm = () => {
     writers: getRandomizedReducedArray(WRITER_NAMES, Math.ceil(Math.random() * 3)),
     actors: getRandomizedReducedArray(ACTOR_NAMES, Math.ceil(Math.random() * 5) + 5),
     releaseDate: Date.now() - Math.round(Math.random() * 50 * MILLISECONDS_IN_YEAR),
-    runtime: `${Math.ceil(Math.random() * 3)}h ${Math.round(Math.random() * 59)}m`,
+    runtime: Math.ceil(Math.random() * 180) + 60,
     country: getRandomElementOfArray(COUNTRIES),
     genres: getRandomizedReducedArray(GENRES, Math.ceil(Math.random() * 3)),
     description: getRandomizedReducedArray(DESCRIPTIONS, Math.ceil(Math.random() * 5)).join(` `),
