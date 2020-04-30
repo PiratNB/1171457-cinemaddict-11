@@ -102,3 +102,10 @@ export const GENRES = [
 ];
 
 export const COMMENT_EMOTIONS = [`angry`, `puke`, `sleeping`, `smile`];
+
+export const FILTER_TYPE = {
+  ALL: `all`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`
+};
