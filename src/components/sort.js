@@ -29,10 +29,6 @@ export default class Sort extends AbstractComponent {
     return createSort();
   }
 
-  getSortType() {
-    return this._currentSortType;
-  }
-
   setSortTypeChooseHandler(handler) {
     this._element.addEventListener(`click`, (evt) => {
       evt.preventDefault();

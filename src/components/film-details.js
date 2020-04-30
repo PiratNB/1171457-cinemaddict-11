@@ -2,12 +2,14 @@
 import {COMMENT_EMOTIONS} from "../mocks/consts";
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
+import {encode} from "he";
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(film) {
+  constructor(film, onDataChange) {
     super();
 
     this._film = film;
+    this._onDataChange = onDataChange;
 
     this._closeClickHandler = null;
     this._choosenEmoji = null;
@@ -34,7 +36,7 @@ export default class FilmDetails extends AbstractSmartComponent {
                 </li>
               `).join(``);
     const emotionsList = COMMENT_EMOTIONS.map((it) => `
-                  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${it}" value="${it}" ${this._choosenEmoji === it ? `checked` : ``}>
+                  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${it}" value="${it}">
                   <label class="film-details__emoji-label" for="emoji-${it}">
                     <img src="./images/emoji/${it}.png" width="30" height="30" alt="emoji">
                   </label>
@@ -116,7 +118,6 @@ export default class FilmDetails extends AbstractSmartComponent {
             </ul>
             <div class="film-details__new-comment">
               <div for="add-emoji" class="film-details__add-emoji-label">
-                ${this._choosenEmoji ? `<img src="images/emoji/${this._choosenEmoji}.png" width="55" height="55" alt="emoji-${this._choosenEmoji}">` : ``}
               </div>
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -136,17 +137,83 @@ export default class FilmDetails extends AbstractSmartComponent {
     if (!this._closeClickHandler) {
       this._closeClickHandler = handler;
     }
-    this.getElement().querySelector(`button.film-details__close-btn`).addEventListener(`click`, this._closeClickHandler);
+    this._element.querySelector(`button.film-details__close-btn`).addEventListener(`click`, this._closeClickHandler);
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`.film-details__emoji-list`)
-      .addEventListener(`click`, (evt) => {
-        if (evt.target.tagName === `INPUT`) {
-          this._choosenEmoji = evt.target.value;
+    this.getElement().querySelector(`input#watchlist`).addEventListener(`change`, (evt) => {
+      this._onDataChange(Object.assign({}, this._film, {isAtWatchlist: evt.target.checked}));
+    });
+    this.getElement().querySelector(`input#watched`).addEventListener(`change`, (evt) => {
+      this._onDataChange(Object.assign({}, this._film, {isWatched: evt.target.checked}));
+    });
+    this.getElement().querySelector(`input#favorite`).addEventListener(`change`, (evt) => {
+      this._onDataChange(Object.assign({}, this._film, {isFavorite: evt.target.checked}));
+    });
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
+      if (evt.target.tagName === `INPUT`) {
+        this._choosenEmoji = evt.target.value;
+        this._renderCommentEmoji();
+      }
+    });
+
+    const keysPressed = new Set();
+    const onInputKeydown = (evt) => {
+      if (evt.code === `Enter`) {
+        evt.preventDefault();
+      }
+      keysPressed.add(evt.code);
+      for (let code of [`ControlLeft`, `Enter`]) {
+        if (!keysPressed.has(code)) {
+          return;
+        }
+      }
+      keysPressed.clear();
+      this._onCommentSubmit();
+    };
+    const onInputKeyup = (evt) => {
+      keysPressed.delete(evt.code);
+    };
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`focus`, () => {
+      document.addEventListener(`keydown`, onInputKeydown);
+      document.addEventListener(`keyup`, onInputKeyup);
+    });
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`blur`, () => {
+      document.removeEventListener(`keydown`, onInputKeydown);
+      document.removeEventListener(`keyup`, onInputKeyup);
+    });
+    this.getElement().querySelectorAll(`li.film-details__comment`).forEach((it, i) => {
+      it.addEventListener(`click`, (evt) => {
+        if (evt.target.tagName === `BUTTON`) {
+          evt.preventDefault();
+          const newCommentList = [...this._film.comments.slice(0, i), ...this._film.comments.slice(i + 1)];
+          this._film = Object.assign({}, this._film, {comments: newCommentList});
+          this._onDataChange(Object.assign({}, this._film));
           this.rerender();
         }
       });
+    });
+  }
+
+  _onCommentSubmit() {
+    if (this._choosenEmoji && this.getElement().querySelector(`.film-details__comment-input`).value) {
+      const newComment = {
+        message: encode(this.getElement().querySelector(`.film-details__comment-input`).value),
+        emotion: this._choosenEmoji,
+        author: `User`,
+        postDate: Date.now()
+      };
+      this._film = Object.assign({}, this._film, {comments: [...this._film.comments, newComment]});
+      this._onDataChange(Object.assign({}, this._film));
+      this._choosenEmoji = null;
+      this.rerender();
+    }
+  }
+
+  _renderCommentEmoji() {
+    this.getElement().querySelector(`.film-details__new-comment .film-details__add-emoji-label`).innerHTML = `
+      <img src="images/emoji/${this._choosenEmoji}.png" width="55" height="55" alt="emoji-${this._choosenEmoji}">
+    `;
   }
 
   recoveryListeners() {

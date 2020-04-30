@@ -8,11 +8,13 @@ import BtnShowMore from "../components/btn-show-more";
 import MovieController from "./movie-controller";
 import {removeElement, renderElement} from "../utils/render";
 import FilterController from "./filter-controller";
+import ProfileUser from "../components/profile-user";
 
 export default class PageController {
   constructor(container, filmsModel) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._userLevel = new ProfileUser();
     this._filterController = new FilterController(this._container, this._filmsModel);
     this._sortingControl = new Sort();
     this._filmsSection = new FilmList();
@@ -32,11 +34,11 @@ export default class PageController {
     this._currentSortType = SORT_TYPE.DEFAULT;
 
     this._filmsModel.setFilterChangeHandler(this._onFilterChange);
-    this._filmsModel.setDataChangeHandler(this._updateFilms.bind(this));
   }
 
   render() {
     this._filterController.render();
+    renderElement(document.querySelector(`header.header`), this._userLevel);
     renderElement(this._container, this._sortingControl);
     renderElement(this._container, this._filmsSection);
 
@@ -69,6 +71,7 @@ export default class PageController {
     this._renderFilmsPack(this._topRatedFilmsListContainer, films.slice(0).sort((a, b) => b.rating - a.rating).slice(0, FILMS_EXTRA_TO_RENDER));
     this._renderFilmsPack(this._mostCommentedFilmsListContainer, films.slice(0).sort((a, b) => b.comments.length - a.comments.length).slice(0, FILMS_EXTRA_TO_RENDER));
     this._filmRenderedCount = count;
+    this._userLevel.updateUserLevel(this._filmsModel.getAllMovies().filter((it) => it.isWatched).length);
     this._renderLoadmoreButton();
   }
 
@@ -122,7 +125,7 @@ export default class PageController {
   _onDataChange(filmComponent, newData) {
     const isUpdateSucceed = this._filmsModel.updateMovie(newData.id, newData);
     if (isUpdateSucceed) {
-      filmComponent.rerenderCard(newData);
+      this._updateFilms();
     }
   }
 
@@ -132,6 +135,7 @@ export default class PageController {
 
   _onFilterChange() {
     this._sortingControl.reset();
+    this._currentSortType = SORT_TYPE.DEFAULT;
     this._updateFilms(FILMS_TO_RENDER);
   }
 
