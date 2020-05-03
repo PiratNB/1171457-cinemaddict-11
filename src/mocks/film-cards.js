@@ -23,6 +23,7 @@ const generateComments = (count) => {
 const generateRandomFilm = () => {
   const filmName = getRandomElementOfArray(FILM_NAMES);
   return {
+    id: String(Math.round(Date.now() * Math.random())),
     name: filmName,
     posterImage: getRandomElementOfArray(POSTER_IMAGES),
     rating: Math.round(Math.random() * 100) / 10,
@@ -43,7 +44,7 @@ const generateRandomFilm = () => {
   };
 };
 
-export const generateFilmBase = (filmsCount) => {
+export const generateMovieBase = (filmsCount) => {
   const films = [];
   for (let i = 0; i < filmsCount; i++) {
     films.push(generateRandomFilm());

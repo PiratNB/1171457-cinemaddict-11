@@ -16,10 +16,6 @@ export default class MovieController {
     this._handleEscKeydown = this._handleEscKeydown.bind(this);
   }
 
-  get filmData() {
-    return this._filmData;
-  }
-
   _handleEscKeydown(keydownEvt) {
     if (keydownEvt.code === `Escape`) {
       this._closePopup();
@@ -37,7 +33,9 @@ export default class MovieController {
 
     this._filmCard.setClickHandler(() => {
       this._onViewChange();
-      this._filmPopup = new FilmDetails(this._filmData);
+      this._filmPopup = new FilmDetails(this._filmData, (newData) => {
+        this._onDataChange(this, newData, this._filmData);
+      });
 
       renderElement(document.querySelector(`body`), this._filmPopup);
       this._filmPopup.setCloseClickHandler(this._closePopup);
@@ -64,16 +62,6 @@ export default class MovieController {
     this._createCard();
 
     renderElement(this._container, this._filmCard); // Рендер карточек фильмов
-  }
-
-  rerenderCard(newData) {
-    this._filmData = newData;
-
-    const parentContainer = this._filmCard.getElement().parentElement;
-    const oldCard = this._filmCard.getElement();
-
-    this._createCard();
-    parentContainer.replaceChild(this._filmCard.getElement(), oldCard);
   }
 
   setDefaultView() {

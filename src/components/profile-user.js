@@ -1,10 +1,9 @@
 import AbstractComponent from "./abstract-component";
 
 export default class ProfileUser extends AbstractComponent {
-  constructor(filmsCount) {
+  constructor() {
     super();
 
-    this._filmsCount = filmsCount;
     this.updateUserLevel();
   }
 
@@ -17,14 +16,22 @@ export default class ProfileUser extends AbstractComponent {
     `;
   }
 
-  updateUserLevel() {
-    if (this._filmsCount > 0 && this._filmsCount <= 100) {
+  updateUserLevel(filmsCount) {
+    if (filmsCount > 0 && filmsCount <= 100) {
       this._userLevel = `Novice`;
-    } else if (this._filmsCount > 100 && this._filmsCount <= 200) {
+    } else if (filmsCount > 10 && filmsCount <= 200) {
       this._userLevel = `Fan`;
-    } else if (this._filmsCount > 200) {
+    } else if (filmsCount > 200) {
       this._userLevel = `Movie Buff`;
     }
+    this._rerender();
+  }
+
+  _rerender() {
+    const oldElement = this.getElement();
+    const parent = oldElement.parentElement;
+    this.removeElement();
+    const newElement = this.getElement();
+    parent.replaceChild(newElement, oldElement);
   }
 }
-
