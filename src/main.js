@@ -17,7 +17,7 @@ moviesModel.setMovies(films);
 const pageController = new PageController(mainContainer, moviesModel);
 pageController.render();
 
-const statistics = new Statistics();
+const statistics = new Statistics(moviesModel);
 renderElement(mainContainer, statistics);
 statistics.hide();
 

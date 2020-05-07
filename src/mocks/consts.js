@@ -109,3 +109,16 @@ export const FILTER_TYPE = {
   HISTORY: `history`,
   FAVORITES: `favorites`
 };
+
+export const USER_RANKS = {
+  'Drama': `Melancholic`,
+  'Mystery': `Enigma`,
+  'Comedy': `Clown`,
+  'Western': `Marlboro`,
+  'Musical': `Singer`,
+  'Cartoon': `Kid`,
+  'Horror': `Exorcist`,
+  'Adventure': `Indiana Jones`,
+  'Fantasy': `Dreamer`,
+  'Science fiction': `Sci-Fighter`
+};
