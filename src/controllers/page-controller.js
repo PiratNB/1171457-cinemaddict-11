@@ -143,4 +143,12 @@ export default class PageController {
     this._removeFilms();
     this._renderFullBoard(this._getSortedFilms(), count);
   }
+
+  show() {
+    this._filmsSection.getElement().classList.remove(`visually-hidden`);
+  }
+
+  hide() {
+    this._filmsSection.getElement().classList.add(`visually-hidden`);
+  }
 }
