@@ -145,7 +145,7 @@ export default class FilmDetails extends AbstractSmartComponent {
       this._onDataChange(Object.assign({}, this._film, {isAtWatchlist: evt.target.checked}));
     });
     this.getElement().querySelector(`input#watched`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isWatched: evt.target.checked}));
+      this._onDataChange(Object.assign({}, this._film, {isWatched: evt.target.checked ? moment() : null}));
     });
     this.getElement().querySelector(`input#favorite`).addEventListener(`change`, (evt) => {
       this._onDataChange(Object.assign({}, this._film, {isFavorite: evt.target.checked}));
@@ -201,7 +201,7 @@ export default class FilmDetails extends AbstractSmartComponent {
         message: encode(this.getElement().querySelector(`.film-details__comment-input`).value),
         emotion: this._choosenEmoji,
         author: `User`,
-        postDate: Date.now()
+        postDate: moment()
       };
       this._film = Object.assign({}, this._film, {comments: [...this._film.comments, newComment]});
       this._onDataChange(Object.assign({}, this._film));

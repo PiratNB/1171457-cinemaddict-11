@@ -38,9 +38,9 @@ const generateRandomFilm = () => {
     description: getRandomizedReducedArray(DESCRIPTIONS, Math.ceil(Math.random() * 5)).join(` `),
     ageRating: Math.round(Math.random() * 21),
     comments: generateComments(Math.round(Math.random() * 5)),
-    isFavorite: Math.random() > 0.5,
-    isAtWatchlist: Math.random() > 0.5,
-    isWatched: Math.random() > 0.5
+    isFavorite: Boolean(Math.round(Math.random())),
+    isAtWatchlist: Boolean(Math.round(Math.random())),
+    isWatched: Math.round(Math.random()) ? Date.now() - Math.round(Math.random() * MILLISECONDS_IN_YEAR) : null
   };
 };
 
