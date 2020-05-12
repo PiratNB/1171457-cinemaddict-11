@@ -1,8 +1,9 @@
-import AbstractSmartComponent from "./abstract-smart-component";
+
 import moment from "moment";
-import {GENRES, USER_RANKS} from "../mocks/consts";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import AbstractSmartComponent from "./abstract-smart-component";
+import {GENRES, USER_RANKS} from "../mocks/consts";
 import {capitalizeFirstLetter} from "../utils/utils";
 
 const BAR_HEIGHT = 50;
@@ -23,7 +24,7 @@ const countFilmsByGenre = (films) => {
     return {
       genre,
       count: films.reduce((acc, film) => {
-        if (film.genres[0] === genre) {
+        if (film.genres.includes(genre)) {
           acc++;
         }
         return acc;
@@ -60,7 +61,7 @@ export default class Statistics extends AbstractSmartComponent {
       return acc + it.runtime;
     }, 0);
     const topGenre = this._films.length ? this._chartData[0].genre : ``;
-    const userRank = this._films.length ? USER_RANKS[topGenre] : ``;
+    const userRank = topGenre ? USER_RANKS[topGenre] : ``;
 
     return `
       <section class="statistic">

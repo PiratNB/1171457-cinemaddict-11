@@ -22,16 +22,17 @@ renderElement(mainContainer, statistics);
 statistics.hide();
 
 mainContainer.addEventListener(`click`, (evt) => {
-  switch (evt.target.classList[0]) {
-    case `main-navigation__additional`:
+  switch (true) {
+    case evt.target.classList.contains(`main-navigation__additional`):
       pageController.hide();
       mainContainer.querySelector(`ul.sort`).classList.add(`visually-hidden`);
       statistics.show();
       break;
-    case `main-navigation__item`:
+    case evt.target.classList.contains(`main-navigation__item`):
       mainContainer.querySelector(`ul.sort`).classList.remove(`visually-hidden`);
       pageController.show();
       statistics.hide();
       break;
   }
 });
+

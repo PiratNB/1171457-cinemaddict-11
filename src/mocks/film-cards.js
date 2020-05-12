@@ -40,6 +40,7 @@ const generateRandomFilm = () => {
     comments: generateComments(Math.round(Math.random() * 5)),
     isFavorite: Boolean(Math.round(Math.random())),
     isAtWatchlist: Boolean(Math.round(Math.random())),
+    // пока оставлю такое наименование
     isWatched: Math.round(Math.random()) ? Date.now() - Math.round(Math.random() * MILLISECONDS_IN_YEAR) : null
   };
 };
