@@ -57,7 +57,11 @@ export default class API {
       method: `POST`,
       body: JSON.stringify(Comment.toRaw(newCommentData)),
       headers,
-    }).then(checkStatus);
+    }).then(checkStatus)
+    .then((response) => response.json())
+    .then(({movie, comments}) => {
+      return Movie.parseFilm(movie, comments);
+    });
   }
 
   deleteComment(commentId) {

@@ -1,5 +1,4 @@
-/* eslint-disable no-invalid-this */
-import {COMMENT_EMOTIONS} from "../mocks/consts";
+import {COMMENT_EMOTIONS} from "../utils/consts";
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
 import {encode} from "he";
@@ -142,13 +141,22 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   _subscribeOnEvents() {
     this.getElement().querySelector(`input#watchlist`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isAtWatchlist: evt.target.checked}));
+      this._onDataChange(Object.assign({}, this._film, {isAtWatchlist: evt.target.checked}))
+        .then((newFilmModel) => {
+          this._film = newFilmModel;
+        });
     });
     this.getElement().querySelector(`input#watched`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isWatched: evt.target.checked ? moment() : null}));
+      this._onDataChange(Object.assign({}, this._film, {isWatched: evt.target.checked ? moment() : null}))
+        .then((newFilmModel) => {
+          this._film = newFilmModel;
+        });
     });
     this.getElement().querySelector(`input#favorite`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isFavorite: evt.target.checked}));
+      this._onDataChange(Object.assign({}, this._film, {isFavorite: evt.target.checked}))
+        .then((newFilmModel) => {
+          this._film = newFilmModel;
+        });
     });
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
@@ -189,8 +197,11 @@ export default class FilmDetails extends AbstractSmartComponent {
           const oldComment = this._film.comments[i];
           const newCommentList = [...this._film.comments.slice(0, i), ...this._film.comments.slice(i + 1)];
           this._film = Object.assign({}, this._film, {comments: newCommentList});
-          this._onDataChange(Object.assign({}, this._film), oldComment);
-          this.rerender();
+          this._onDataChange(Object.assign({}, this._film), oldComment)
+            .then((newFilmModel) => {
+              this._film = newFilmModel;
+              this.rerender();
+            });
         }
       });
     });
@@ -201,13 +212,14 @@ export default class FilmDetails extends AbstractSmartComponent {
       const newComment = {
         message: encode(this.getElement().querySelector(`.film-details__comment-input`).value),
         emotion: this._choosenEmoji,
-        author: `User`,
         postDate: moment().toISOString()
       };
-      this._film = Object.assign({}, this._film, {comments: [...this._film.comments, newComment]});
-      this._onDataChange(Object.assign({}, this._film), newComment);
       this._choosenEmoji = null;
-      this.rerender();
+      this._onDataChange(this._film, newComment)
+      .then((newFilmModel) => {
+        this._film = newFilmModel;
+        this.rerender();
+      });
     }
   }
 

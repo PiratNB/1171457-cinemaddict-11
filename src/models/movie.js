@@ -1,5 +1,5 @@
 import Comment from "./comment";
-import {GENRES} from "../mocks/consts";
+import {GENRES} from "../utils/consts";
 
 const addGenres = (genres, allGenres) => {
   genres.forEach((it) => allGenres.add(it));
@@ -59,10 +59,10 @@ export default class Movie {
   }
 
   static parseFilm(filmData, comments) {
-    return new Movie(filmData, comments);
+    return new Movie(filmData, Comment.parseComments(comments));
   }
 
   static parseFilms(films, comments) {
-    return films.map((film, i) => Movie.parseFilm(film, Comment.parseComments(comments[i])));
+    return films.map((film, i) => Movie.parseFilm(film, comments[i]));
   }
 }

@@ -3,7 +3,7 @@ import moment from "moment";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AbstractSmartComponent from "./abstract-smart-component";
-import {GENRES, USER_RANKS} from "../mocks/consts";
+import {GENRES, USER_RANKS} from "../utils/consts";
 import {capitalizeFirstLetter} from "../utils/utils";
 
 const BAR_HEIGHT = 50;
@@ -20,7 +20,7 @@ const countFilmsByGenre = (films) => {
   if (!films.length) {
     return [];
   }
-  return GENRES.map((genre) => {
+  return [...GENRES].map((genre) => {
     return {
       genre,
       count: films.reduce((acc, film) => {

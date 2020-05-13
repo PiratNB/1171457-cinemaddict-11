@@ -123,20 +123,35 @@ export default class PageController {
     }
   }
 
-  _onDataChange(newData, updateComment) {
+  _onDataChange(filmData, updateComment) {
     if (updateComment) {
       if (updateComment.id) {
-        this._api.deleteComment(updateComment.id);
+        return this._api.deleteComment(updateComment.id)
+          .then(() => {
+            const isUpdateSucceed = this._filmsModel.updateMovie(filmData);
+            if (isUpdateSucceed) {
+              this._updateFilms();
+            }
+            return this._filmsModel.getFilmById(filmData.id);
+          });
       } else {
-        this._api.postComment(newData.id, updateComment);
+        return this._api.postComment(filmData.id, updateComment)
+          .then((filmModel) => {
+            const isUpdateSucceed = this._filmsModel.updateMovie(filmModel);
+            if (isUpdateSucceed) {
+              this._updateFilms();
+            }
+            return this._filmsModel.getFilmById(filmData.id);
+          });
       }
     } else {
-      this._api.updateFilm(newData)
+      return this._api.updateFilm(filmData)
         .then((filmModel) => {
-          const isUpdateSucceed = this._filmsModel.updateMovie(filmModel.id, filmModel);
+          const isUpdateSucceed = this._filmsModel.updateMovie(filmModel);
           if (isUpdateSucceed) {
             this._updateFilms();
           }
+          return this._filmsModel.getFilmById(filmData.id);
         });
     }
   }

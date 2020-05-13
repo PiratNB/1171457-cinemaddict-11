@@ -1,4 +1,4 @@
-import {FILTER_TYPE} from "../mocks/consts";
+import {FILTER_TYPE} from "../utils/consts";
 import {getFilmsByFilter} from "../utils/utils";
 
 export default class Movies {
@@ -18,12 +18,16 @@ export default class Movies {
     return getFilmsByFilter(this._movies, this._activeFilterType);
   }
 
+  getFilmById(id) {
+    return this._movies.find((it) => it.id === id);
+  }
+
   setMovies(movies) {
     this._movies = [...movies];
   }
 
-  updateMovie(id, movieData) {
-    const index = this._movies.findIndex((it) => it.id === id);
+  updateMovie(movieData) {
+    const index = this._movies.findIndex((it) => it.id === movieData.id);
 
     if (index === -1) {
       return false;
