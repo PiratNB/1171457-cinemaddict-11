@@ -14,4 +14,15 @@ export default class Comment {
   static parseComments(comments) {
     return comments.map((comment) => Comment.parseComment(comment));
   }
+
+  static toRaw(comment) {
+    return {
+      'id': comment.id ? comment.id : null,
+      'author': comment.author,
+      'comment': comment.message,
+      'date': comment.postDate,
+      'emotion': comment.emotion
+    };
+  }
 }
+

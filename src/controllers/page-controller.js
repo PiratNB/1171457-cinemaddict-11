@@ -11,9 +11,10 @@ import FilterController from "./filter-controller";
 import ProfileUser from "../components/profile-user";
 
 export default class PageController {
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, api) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._api = api;
     this._userLevel = new ProfileUser();
     this._filterController = new FilterController(this._container, this._filmsModel);
     this._sortingControl = new Sort();
@@ -122,10 +123,21 @@ export default class PageController {
     }
   }
 
-  _onDataChange(filmComponent, newData) {
-    const isUpdateSucceed = this._filmsModel.updateMovie(newData.id, newData);
-    if (isUpdateSucceed) {
-      this._updateFilms();
+  _onDataChange(newData, updateComment) {
+    if (updateComment) {
+      if (updateComment.id) {
+        this._api.deleteComment(updateComment.id);
+      } else {
+        this._api.postComment(newData.id, updateComment);
+      }
+    } else {
+      this._api.updateFilm(newData)
+        .then((filmModel) => {
+          const isUpdateSucceed = this._filmsModel.updateMovie(filmModel.id, filmModel);
+          if (isUpdateSucceed) {
+            this._updateFilms();
+          }
+        });
     }
   }
 

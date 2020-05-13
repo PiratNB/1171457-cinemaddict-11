@@ -34,9 +34,7 @@ export default class MovieController {
 
     this._filmCard.setClickHandler(() => {
       this._onViewChange();
-      this._filmPopup = new FilmDetails(this._filmData, (newData) => {
-        this._onDataChange(this, newData, this._filmData);
-      });
+      this._filmPopup = new FilmDetails(this._filmData, this._onDataChange);
 
       renderElement(document.querySelector(`body`), this._filmPopup);
       this._filmPopup.setCloseClickHandler(this._closePopup);
@@ -45,17 +43,17 @@ export default class MovieController {
 
     this._filmCard.setWatchlistButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, Object.assign({}, this._filmData, {isAtWatchlist: !this._filmData.isAtWatchlist}));
+      this._onDataChange(Object.assign({}, this._filmData, {isAtWatchlist: !this._filmData.isAtWatchlist}));
     });
 
     this._filmCard.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, Object.assign({}, this._filmData, {isWatched: this._filmData.isWatched ? null : moment()}));
+      this._onDataChange(Object.assign({}, this._filmData, {isWatched: this._filmData.isWatched ? null : moment()}));
     });
 
     this._filmCard.setFavoriteButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, Object.assign({}, this._filmData, {isFavorite: !this._filmData.isFavorite}));
+      this._onDataChange(Object.assign({}, this._filmData, {isFavorite: !this._filmData.isFavorite}));
     });
   }
 

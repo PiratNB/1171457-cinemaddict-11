@@ -11,7 +11,7 @@ const api = new API(AUTHORIZATION);
 const mainContainer = document.querySelector(`main.main`);
 const moviesModel = new MoviesModel();
 
-const pageController = new PageController(mainContainer, moviesModel);
+const pageController = new PageController(mainContainer, moviesModel, api);
 
 const statistics = new Statistics(moviesModel);
 

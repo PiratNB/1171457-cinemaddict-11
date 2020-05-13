@@ -17,7 +17,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    const releaseDate = new Date(this._film.releaseDate).toLocaleDateString(`en-GB`, {day: `numeric`, month: `long`, year: `numeric`});
+    const releaseDate = moment(this._film.releaseDate).format(`D MMMM YYYY`);
     const filmDuration = `${moment.duration(this._film.runtime, `minutes`).hours()}h ${moment.duration(this._film.runtime, `minutes`).minutes()}m`;
     const filmGenres = this._film.genres.map((it) => `<span class="film-details__genre">${it}</span>`).join(` `);
     const commentsList = this._film.comments.map((it) => `
@@ -90,7 +90,7 @@ export default class FilmDetails extends AbstractSmartComponent {
                   <td class="film-details__cell">${this._film.country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">Genre${this._film.genres.length > 1 ? `s` : ``}</td>
                   <td class="film-details__cell">
                     ${filmGenres}
                    </td>
@@ -186,9 +186,10 @@ export default class FilmDetails extends AbstractSmartComponent {
       it.addEventListener(`click`, (evt) => {
         if (evt.target.tagName === `BUTTON`) {
           evt.preventDefault();
+          const oldComment = this._film.comments[i];
           const newCommentList = [...this._film.comments.slice(0, i), ...this._film.comments.slice(i + 1)];
           this._film = Object.assign({}, this._film, {comments: newCommentList});
-          this._onDataChange(Object.assign({}, this._film));
+          this._onDataChange(Object.assign({}, this._film), oldComment);
           this.rerender();
         }
       });
@@ -201,10 +202,10 @@ export default class FilmDetails extends AbstractSmartComponent {
         message: encode(this.getElement().querySelector(`.film-details__comment-input`).value),
         emotion: this._choosenEmoji,
         author: `User`,
-        postDate: moment()
+        postDate: moment().toISOString()
       };
       this._film = Object.assign({}, this._film, {comments: [...this._film.comments, newComment]});
-      this._onDataChange(Object.assign({}, this._film));
+      this._onDataChange(Object.assign({}, this._film), newComment);
       this._choosenEmoji = null;
       this.rerender();
     }
