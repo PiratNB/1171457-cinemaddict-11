@@ -1,25 +1,20 @@
-const FILMS_COUNT = Math.round(Math.random() * 500);
-
 import FilmStat from "./components/film-stat";
 import {renderElement} from "./utils/render";
-import {generateMovieBase} from "./mocks/film-cards";
 import PageController from "./controllers/page-controller";
 import MoviesModel from "./models/movies";
 import Statistics from "./components/statistics";
+import API from "./api";
 
-const films = generateMovieBase(FILMS_COUNT);
+const AUTHORIZATION = `Basic dCFVfgwHGbTnHBUgy`;
+const api = new API(AUTHORIZATION);
 
-renderElement(document.querySelector(`.footer__statistics`), new FilmStat(films)); // Рендер общего кол-ва фильмов
 const mainContainer = document.querySelector(`main.main`);
-
 const moviesModel = new MoviesModel();
-moviesModel.setMovies(films);
+
 const pageController = new PageController(mainContainer, moviesModel);
-pageController.render();
 
 const statistics = new Statistics(moviesModel);
-renderElement(mainContainer, statistics);
-statistics.hide();
+
 
 mainContainer.addEventListener(`click`, (evt) => {
   switch (true) {
@@ -36,3 +31,14 @@ mainContainer.addEventListener(`click`, (evt) => {
   }
 });
 
+api.getFilms()
+  .then((films) => {
+    moviesModel.setMovies(films);
+
+    pageController.render();
+
+    renderElement(mainContainer, statistics);
+    statistics.hide();
+
+    renderElement(document.querySelector(`.footer__statistics`), new FilmStat(films.length));
+  });

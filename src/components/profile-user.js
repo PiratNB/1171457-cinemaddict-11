@@ -17,11 +17,11 @@ export default class ProfileUser extends AbstractComponent {
   }
 
   updateUserLevel(filmsCount) {
-    if (filmsCount > 0 && filmsCount <= 100) {
+    if (filmsCount > 0 && filmsCount <= 10) {
       this._userLevel = `Novice`;
-    } else if (filmsCount > 10 && filmsCount <= 200) {
+    } else if (filmsCount > 10 && filmsCount <= 20) {
       this._userLevel = `Fan`;
-    } else if (filmsCount > 200) {
+    } else if (filmsCount > 20) {
       this._userLevel = `Movie Buff`;
     }
     this._rerender();

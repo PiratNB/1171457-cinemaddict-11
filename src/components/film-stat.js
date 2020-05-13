@@ -2,7 +2,7 @@ import AbstractComponent from "./abstract-component";
 
 const createStat = (films) => {
   return (
-    `<p>${films.length} movie${films.length > 1 ? `s` : ``} inside</p>`
+    `<p>${films} movie${films > 1 ? `s` : ``} inside</p>`
   );
 };
 
@@ -17,3 +17,4 @@ export default class FilmStat extends AbstractComponent {
     return createStat(this._films);
   }
 }
+
