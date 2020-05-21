@@ -140,24 +140,22 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`input#watchlist`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isAtWatchlist: evt.target.checked}))
-        .then((newFilmModel) => {
-          this._film = newFilmModel;
-        });
-    });
-    this.getElement().querySelector(`input#watched`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isWatched: evt.target.checked ? moment() : null}))
-        .then((newFilmModel) => {
-          this._film = newFilmModel;
-        });
-    });
-    this.getElement().querySelector(`input#favorite`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isFavorite: evt.target.checked}))
-        .then((newFilmModel) => {
-          this._film = newFilmModel;
-        });
-    });
+
+    const updateFilmModel = (id, field) => {
+      this.getElement().querySelector(`input#${id}`).addEventListener(`change`, (evt) => {
+        this._onDataChange(Object.assign({}, this._film, {[field]: evt.target.checked}))
+          .then((newFilmModel) => {
+            this._film = newFilmModel;
+          });
+      });
+    };
+
+    updateFilmModel(`watchlist`, `isAtWatchlist`);
+    updateFilmModel(`watched`, `isWatched`);
+    updateFilmModel(`favorite`, `isFavorite`);
+
+    // старый код
+
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
         this._choosenEmoji = evt.target.value;
@@ -216,10 +214,10 @@ export default class FilmDetails extends AbstractSmartComponent {
       };
       this._choosenEmoji = null;
       this._onDataChange(this._film, newComment)
-      .then((newFilmModel) => {
-        this._film = newFilmModel;
-        this.rerender();
-      });
+        .then((newFilmModel) => {
+          this._film = newFilmModel;
+          this.rerender();
+        });
     }
   }
 

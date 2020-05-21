@@ -123,37 +123,27 @@ export default class PageController {
     }
   }
 
+
+  // правки ниже
   _onDataChange(filmData, updateComment) {
+
+    const dataChange = (filmModel) => {
+      const film = filmModel || filmData;
+      const isUpdateSucceed = this._filmsModel.updateMovie(film);
+      if (isUpdateSucceed) {
+        this._updateFilms();
+      }
+      return this._filmsModel.getFilmById(filmData.id);
+    };
+
     if (updateComment) {
       if (updateComment.id) {
-        return this._api.deleteComment(updateComment.id)
-          .then(() => {
-            const isUpdateSucceed = this._filmsModel.updateMovie(filmData);
-            if (isUpdateSucceed) {
-              this._updateFilms();
-            }
-            return this._filmsModel.getFilmById(filmData.id);
-          });
-      } else {
-        return this._api.postComment(filmData.id, updateComment)
-          .then((filmModel) => {
-            const isUpdateSucceed = this._filmsModel.updateMovie(filmModel);
-            if (isUpdateSucceed) {
-              this._updateFilms();
-            }
-            return this._filmsModel.getFilmById(filmData.id);
-          });
+        return this._api.deleteComment(updateComment.id).then(dataChange);
       }
-    } else {
-      return this._api.updateFilm(filmData)
-        .then((filmModel) => {
-          const isUpdateSucceed = this._filmsModel.updateMovie(filmModel);
-          if (isUpdateSucceed) {
-            this._updateFilms();
-          }
-          return this._filmsModel.getFilmById(filmData.id);
-        });
+      return this._api.postComment(filmData.id, updateComment).then(dataChange);
     }
+
+    return this._api.updateFilm(filmData).then(dataChange);
   }
 
   _onViewChange() {
