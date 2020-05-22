@@ -6,7 +6,8 @@ import Statistics from "./components/statistics";
 import API from "./api";
 
 const AUTHORIZATION = `Basic dCFVfgwHGbTnHBUgy`;
-const api = new API(AUTHORIZATION);
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const api = new API(END_POINT, AUTHORIZATION);
 
 const mainContainer = document.querySelector(`main.main`);
 const moviesModel = new MoviesModel();

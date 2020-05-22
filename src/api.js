@@ -24,7 +24,7 @@ export default class API {
 
   getFilms() {
 
-    return this._load({url: `movies`})
+    return this._load({url: `movies/`})
       .then((response) => response.json())
       .then((films) => {
         return Promise.all(films.map((it) => this._getComments(it.id)))
