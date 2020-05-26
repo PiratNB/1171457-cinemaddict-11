@@ -3,6 +3,9 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
 import {encode} from "he";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
+
 export default class FilmDetails extends AbstractSmartComponent {
   constructor(film, onDataChange) {
     super();
@@ -192,6 +195,8 @@ export default class FilmDetails extends AbstractSmartComponent {
       it.addEventListener(`click`, (evt) => {
         if (evt.target.tagName === `BUTTON`) {
           evt.preventDefault();
+          evt.target.disabled = true;
+          evt.target.textContent = `Deleting...`;
           const oldComment = this._film.comments[i];
           const newCommentList = [...this._film.comments.slice(0, i), ...this._film.comments.slice(i + 1)];
           this._film = Object.assign({}, this._film, {comments: newCommentList});
@@ -199,6 +204,11 @@ export default class FilmDetails extends AbstractSmartComponent {
             .then((newFilmModel) => {
               this._film = newFilmModel;
               this.rerender();
+            })
+            .catch(() => {
+              evt.target.disabled = false;
+              this._shake(evt.target.parentElement.parentElement.parentElement);
+              evt.target.textContent = `Delete`;
             });
         }
       });
@@ -207,6 +217,7 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   _onCommentSubmit() {
     if (this._choosenEmoji && this.getElement().querySelector(`.film-details__comment-input`).value) {
+      this.getElement().querySelector(`.film-details__comment-input`).setAttribute(`disabled`, true);
       const newComment = {
         message: encode(this.getElement().querySelector(`.film-details__comment-input`).value),
         emotion: this._choosenEmoji,
@@ -217,6 +228,11 @@ export default class FilmDetails extends AbstractSmartComponent {
         .then((newFilmModel) => {
           this._film = newFilmModel;
           this.rerender();
+        })
+        .catch(() => {
+          this.getElement().querySelector(`.film-details__comment-input`).removeAttribute(`disabled`);
+          this._addRedBorder(this.getElement().querySelector(`.film-details__comment-input`));
+          this._shake(this.getElement().querySelector(`.film-details__new-comment`));
         });
     }
   }
@@ -231,4 +247,20 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setCloseClickHandler();
     this._subscribeOnEvents();
   }
+
+  _shake(element) {
+    element.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      element.style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  _addRedBorder(element) {
+    element.style.border = `2px red solid`;
+    setTimeout(() => {
+      element.style.border = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
 }
