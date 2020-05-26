@@ -158,6 +158,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     updateFilmModel(`watched`, `isWatched`);
     updateFilmModel(`favorite`, `isFavorite`);
 
+
     const keysPressed = new Set();
     const onInputKeydown = (evt) => {
       if (evt.code === `Enter`) {
