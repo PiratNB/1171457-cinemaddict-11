@@ -1,5 +1,5 @@
-import Movie from "./models/movie";
-import Comment from "./models/comment";
+import Movie from "../models/movie";
+import Comment from "../models/comment";
 
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {

@@ -137,10 +137,10 @@ export default class PageController {
     };
 
     if (updateComment) {
-      if (updateComment.id) {
-        return this._api.deleteComment(updateComment.id).then(dataChange);
+      if (updateComment.author) {
+        return this._api.deleteComment(updateComment.id, filmData).then(dataChange);
       }
-      return this._api.postComment(filmData.id, updateComment).then(dataChange);
+      return this._api.postComment(filmData.id, updateComment, filmData).then(dataChange);
     }
 
     return this._api.updateFilm(filmData).then(dataChange);

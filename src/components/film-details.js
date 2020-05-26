@@ -2,6 +2,7 @@ import {COMMENT_EMOTIONS} from "../utils/consts";
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
 import {encode} from "he";
+import {nanoid} from "nanoid";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
@@ -221,10 +222,13 @@ export default class FilmDetails extends AbstractSmartComponent {
       const newComment = {
         message: encode(this.getElement().querySelector(`.film-details__comment-input`).value),
         emotion: this._choosenEmoji,
-        postDate: moment().toISOString()
+        postDate: moment().toISOString(),
+        id: nanoid()
       };
+      const newCommentList = [...this._film.comments, newComment];
+      const updatedFilm = Object.assign({}, this._film, {comments: newCommentList});
       this._choosenEmoji = null;
-      this._onDataChange(this._film, newComment)
+      this._onDataChange(updatedFilm, newComment)
         .then((newFilmModel) => {
           this._film = newFilmModel;
           this.rerender();
