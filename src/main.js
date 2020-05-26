@@ -42,3 +42,7 @@ api.getFilms()
 
     renderElement(document.querySelector(`.footer__statistics`), new FilmStat(films.length));
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
