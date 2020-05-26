@@ -22,7 +22,7 @@ export default class API {
       .then(checkStatus)
       .then((response) => response.json())
       .then((films) => {
-        return Promise.all(films.map((it) => this._getComments(it.id)))
+        return Promise.all(films.map((it) => this.getComments(it.id)))
           .then((comments) => {
             return Movie.parseFilms(films, comments);
           });
@@ -41,7 +41,7 @@ export default class API {
     }).then(checkStatus)
       .then((response) => response.json())
       .then((film) => {
-        return this._getComments(film.id)
+        return this.getComments(film.id)
           .then((comments) => {
             return Movie.parseFilm(film, comments);
           });
@@ -74,12 +74,29 @@ export default class API {
     }).then(checkStatus);
   }
 
-  _getComments(filmId) {
+  getComments(filmId) {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`https://11.ecmascript.pages.academy/cinemaddict/comments/${filmId}`, {headers})
       .then(checkStatus)
       .then((response) => response.json());
+  }
+
+  sync(films, commentsToPost, commentsToDelete) {
+    const headers = new Headers();
+    headers.append(`Authorization`, this._authorization);
+    headers.append(`Content-Type`, `application/json`);
+
+    return Promise.all([...commentsToPost.map((comment) => this.postComment(comment.filmId, comment.comment)),
+      ...commentsToDelete.map((commentId) => this.deleteComment(commentId))
+    ]).then(() => {
+      return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies/sync`, {
+        method: `POST`,
+        body: JSON.stringify(films),
+        headers,
+      }).then(checkStatus)
+        .then((response) => response.json());
+    });
   }
 }

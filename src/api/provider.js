@@ -10,6 +10,9 @@ export default class Provider {
     this._api = api;
     this._filmStore = filmStore;
     this._commentsStore = commentsStore;
+    this._syncNeeded = false;
+    this._commentsToPost = [];
+    this._commentsToDelete = [];
   }
 
   getFilms() {
@@ -47,6 +50,8 @@ export default class Provider {
         });
     }
 
+    this._syncNeeded = true;
+
     const localFilm = Object.assign({}, data);
 
     this._filmStore.setItem(data.id, Movie.toRaw(localFilm));
@@ -65,11 +70,13 @@ export default class Provider {
         });
     }
 
+    this._syncNeeded = true;
+
     const localFilm = Object.assign({}, filmData);
 
     this._filmStore.setItem(filmId, Movie.toRaw(localFilm));
     this._commentsStore.setItem(filmId, localFilm.comments.map((it) => Comment.toRaw(it)));
-
+    this._commentsToPost.push({filmId, comment: newCommentData});
     return Promise.resolve(localFilm);
   }
 
@@ -82,9 +89,39 @@ export default class Provider {
         });
     }
 
+    this._syncNeeded = true;
+
     this._commentsStore.removeItem(commentId);
     this._filmStore.setItem(filmData.id, Movie.toRaw(filmData));
 
+    const commentToPostIndex = this._commentsToPost.findIndex((it) => it.comment.id === commentId);
+    if (commentToPostIndex < 0) {
+      this._commentsToDelete.push(commentId);
+    } else {
+      this._commentsToDelete = [...this._commentsToDelete.slice(0, commentToPostIndex), ...this._commentsToDelete.slice(commentToPostIndex + 1)];
+    }
+
     return Promise.resolve();
+  }
+
+  sync() {
+    if (!this._syncNeeded) {
+      return Promise.resolve();
+    }
+    if (isOnline()) {
+      const storeFilms = Object.values(this._filmStore.getItems());
+
+      return this._api.sync(storeFilms, this._commentsToPost, this._commentsToDelete)
+        .then((films) => {
+          this.getFilms();
+          this._commentsToPost = [];
+
+          this._commentsToDelete = [];
+          this._syncNeeded = false;
+          return films;
+        });
+    }
+
+    return Promise.reject(new Error(`Sync data failed`));
   }
 }
