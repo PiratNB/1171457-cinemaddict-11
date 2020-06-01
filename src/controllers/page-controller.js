@@ -123,8 +123,6 @@ export default class PageController {
     }
   }
 
-
-  // правки ниже
   _onDataChange(filmData, updateComment) {
 
     const dataChange = (filmModel) => {

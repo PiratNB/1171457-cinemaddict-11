@@ -11,24 +11,23 @@ export default class Provider {
     this._filmStore = filmStore;
     this._commentsStore = commentsStore;
     this._syncNeeded = false;
-    this._commentsToPost = [];
-    this._commentsToDelete = [];
   }
 
   getFilms() {
     if (isOnline()) {
       return this._api.getFilms()
         .then((filmModels) => {
-          this._filmStore.setItems(filmModels.reduce((acc, it) => {
-            return Object.assign({}, acc, {
-              [it.id]: Movie.toRaw(it)
-            });
-          }, {}));
-          this._commentsStore.setItems(filmModels.reduce((acc, it) => {
-            return Object.assign({}, acc, {
-              [it.id]: it.comments.map((comment) => Comment.toRaw(comment))
-            });
-          }, {}));
+          const items = filmModels.reduce((acc, it) => {
+            acc[it.id] = Movie.toRaw(it);
+            return acc;
+          }, {});
+          this._filmStore.setItems(items);
+
+          const itemsCom = filmModels.reduce((acc, it) => {
+            acc[it.id] = it.comments.map((comment) => Comment.toRaw(comment));
+            return acc;
+          }, {});
+          this._commentsStore.setItems(itemsCom);
 
           return filmModels;
         });

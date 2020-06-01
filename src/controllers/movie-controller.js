@@ -91,5 +91,4 @@ export default class MovieController {
       this._filmCard.getElement().style.animation = ``;
     }, SHAKE_ANIMATION_TIMEOUT);
   }
-
 }
