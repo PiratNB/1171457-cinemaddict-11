@@ -1,5 +1,5 @@
 import AbstractComponent from "./abstract-component";
-import {FILTER_TYPE} from "../mocks/consts";
+import {FILTER_TYPE} from "../utils/consts";
 import {capitalizeFirstLetter} from "../utils/utils";
 
 export default class Navigation extends AbstractComponent {

@@ -1,4 +1,4 @@
-import {FILTER_TYPE} from "../mocks/consts";
+import {FILTER_TYPE} from "../utils/consts";
 import {getFilmsByFilter} from "../utils/utils";
 import Navigation from "../components/navigation";
 import {renderElement} from "../utils/render";

@@ -1,25 +1,31 @@
-const FILMS_COUNT = Math.round(Math.random() * 500);
-
 import FilmStat from "./components/film-stat";
 import {renderElement} from "./utils/render";
-import {generateMovieBase} from "./mocks/film-cards";
 import PageController from "./controllers/page-controller";
 import MoviesModel from "./models/movies";
 import Statistics from "./components/statistics";
+import API from "./api/api";
+import Provider from "./api/provider";
+import Store from "./api/store";
 
-const films = generateMovieBase(FILMS_COUNT);
+const STORE_VER = `v1`;
+const FILM_STORE_PREFIX = `cinemaaddict-localstorage-films`;
+const FILM_STORE_NAME = `${FILM_STORE_PREFIX}-${STORE_VER}`;
+const COMMENTS_STORE_PREFIX = `cinemaaddict-localstorage-comments`;
+const COMMENTS_STORE_NAME = `${COMMENTS_STORE_PREFIX}-${STORE_VER}`;
+const AUTHORIZATION = `Basic dCFvgBHnjDDkjnHBUgy`;
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const api = new API(END_POINT, AUTHORIZATION);
+const filmStore = new Store(FILM_STORE_NAME, window.localStorage);
+const commentsStore = new Store(COMMENTS_STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, filmStore, commentsStore);
 
-renderElement(document.querySelector(`.footer__statistics`), new FilmStat(films)); // Рендер общего кол-ва фильмов
 const mainContainer = document.querySelector(`main.main`);
-
 const moviesModel = new MoviesModel();
-moviesModel.setMovies(films);
-const pageController = new PageController(mainContainer, moviesModel);
-pageController.render();
+
+const pageController = new PageController(mainContainer, moviesModel, apiWithProvider);
 
 const statistics = new Statistics(moviesModel);
-renderElement(mainContainer, statistics);
-statistics.hide();
+
 
 mainContainer.addEventListener(`click`, (evt) => {
   switch (true) {
@@ -36,3 +42,28 @@ mainContainer.addEventListener(`click`, (evt) => {
   }
 });
 
+apiWithProvider.getFilms()
+  .then((films) => {
+    moviesModel.setMovies(films);
+
+    pageController.render();
+
+    renderElement(mainContainer, statistics);
+    statistics.hide();
+
+    renderElement(document.querySelector(`.footer__statistics`), new FilmStat(films.length));
+  });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

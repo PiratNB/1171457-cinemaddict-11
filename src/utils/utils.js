@@ -1,4 +1,4 @@
-import {FILTER_TYPE} from "../mocks/consts";
+import {FILTER_TYPE} from "./consts";
 
 export const getRandomElementOfArray = (arr) => {
   return arr[Math.floor(Math.random() * arr.length)];

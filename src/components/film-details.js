@@ -1,8 +1,11 @@
-/* eslint-disable no-invalid-this */
-import {COMMENT_EMOTIONS} from "../mocks/consts";
+import {COMMENT_EMOTIONS} from "../utils/consts";
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
 import {encode} from "he";
+import {nanoid} from "nanoid";
+
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 
 export default class FilmDetails extends AbstractSmartComponent {
   constructor(film, onDataChange) {
@@ -17,7 +20,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    const releaseDate = new Date(this._film.releaseDate).toLocaleDateString(`en-GB`, {day: `numeric`, month: `long`, year: `numeric`});
+    const releaseDate = moment(this._film.releaseDate).format(`D MMMM YYYY`);
     const filmDuration = `${moment.duration(this._film.runtime, `minutes`).hours()}h ${moment.duration(this._film.runtime, `minutes`).minutes()}m`;
     const filmGenres = this._film.genres.map((it) => `<span class="film-details__genre">${it}</span>`).join(` `);
     const commentsList = this._film.comments.map((it) => `
@@ -51,7 +54,7 @@ export default class FilmDetails extends AbstractSmartComponent {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${this._film.posterImage}" alt="${this._film.name}">
+              <img class="film-details__poster-img" src="${this._film.posterImage}" alt="${this._film.name}">
               <p class="film-details__age">${this._film.ageRating}+</p>
             </div>
             <div class="film-details__info">
@@ -90,7 +93,7 @@ export default class FilmDetails extends AbstractSmartComponent {
                   <td class="film-details__cell">${this._film.country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">Genre${this._film.genres.length > 1 ? `s` : ``}</td>
                   <td class="film-details__cell">
                     ${filmGenres}
                    </td>
@@ -141,21 +144,20 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`input#watchlist`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isAtWatchlist: evt.target.checked}));
-    });
-    this.getElement().querySelector(`input#watched`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isWatched: evt.target.checked ? moment() : null}));
-    });
-    this.getElement().querySelector(`input#favorite`).addEventListener(`change`, (evt) => {
-      this._onDataChange(Object.assign({}, this._film, {isFavorite: evt.target.checked}));
-    });
-    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
-      if (evt.target.tagName === `INPUT`) {
-        this._choosenEmoji = evt.target.value;
-        this._renderCommentEmoji();
-      }
-    });
+
+    const updateFilmModel = (id, field) => {
+      this.getElement().querySelector(`input#${id}`).addEventListener(`change`, (evt) => {
+        this._onDataChange(Object.assign({}, this._film, {[field]: evt.target.checked}))
+          .then((newFilmModel) => {
+            this._film = newFilmModel;
+          });
+      });
+    };
+
+    updateFilmModel(`watchlist`, `isAtWatchlist`);
+    updateFilmModel(`watched`, `isWatched`);
+    updateFilmModel(`favorite`, `isFavorite`);
+
 
     const keysPressed = new Set();
     const onInputKeydown = (evt) => {
@@ -186,10 +188,21 @@ export default class FilmDetails extends AbstractSmartComponent {
       it.addEventListener(`click`, (evt) => {
         if (evt.target.tagName === `BUTTON`) {
           evt.preventDefault();
+          evt.target.disabled = true;
+          evt.target.textContent = `Deleting...`;
+          const oldComment = this._film.comments[i];
           const newCommentList = [...this._film.comments.slice(0, i), ...this._film.comments.slice(i + 1)];
           this._film = Object.assign({}, this._film, {comments: newCommentList});
-          this._onDataChange(Object.assign({}, this._film));
-          this.rerender();
+          this._onDataChange(Object.assign({}, this._film), oldComment)
+            .then((newFilmModel) => {
+              this._film = newFilmModel;
+              this.rerender();
+            })
+            .catch(() => {
+              evt.target.disabled = false;
+              this._shake(evt.target.parentElement.parentElement.parentElement);
+              evt.target.textContent = `Delete`;
+            });
         }
       });
     });
@@ -197,16 +210,26 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   _onCommentSubmit() {
     if (this._choosenEmoji && this.getElement().querySelector(`.film-details__comment-input`).value) {
+      this.getElement().querySelector(`.film-details__comment-input`).setAttribute(`disabled`, true);
       const newComment = {
         message: encode(this.getElement().querySelector(`.film-details__comment-input`).value),
         emotion: this._choosenEmoji,
-        author: `User`,
-        postDate: moment()
+        postDate: moment().toISOString(),
+        id: nanoid()
       };
-      this._film = Object.assign({}, this._film, {comments: [...this._film.comments, newComment]});
-      this._onDataChange(Object.assign({}, this._film));
+      const newCommentList = [...this._film.comments, newComment];
+      const updatedFilm = Object.assign({}, this._film, {comments: newCommentList});
       this._choosenEmoji = null;
-      this.rerender();
+      this._onDataChange(updatedFilm, newComment)
+        .then((newFilmModel) => {
+          this._film = newFilmModel;
+          this.rerender();
+        })
+        .catch(() => {
+          this.getElement().querySelector(`.film-details__comment-input`).removeAttribute(`disabled`);
+          this._addRedBorder(this.getElement().querySelector(`.film-details__comment-input`));
+          this._shake(this.getElement().querySelector(`.film-details__new-comment`));
+        });
     }
   }
 
@@ -220,4 +243,20 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setCloseClickHandler();
     this._subscribeOnEvents();
   }
+
+  _shake(element) {
+    element.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      element.style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  _addRedBorder(element) {
+    element.style.border = `2px red solid`;
+    setTimeout(() => {
+      element.style.border = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
 }

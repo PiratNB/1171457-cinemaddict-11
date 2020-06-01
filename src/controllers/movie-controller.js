@@ -3,6 +3,8 @@ import FilmDetails from "../components/film-details";
 import {removeElement, renderElement} from "../utils/render";
 import moment from "moment";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export default class MovieController {
   constructor(container, film, onDataChange, onViewChange) {
     this._container = container;
@@ -34,9 +36,7 @@ export default class MovieController {
 
     this._filmCard.setClickHandler(() => {
       this._onViewChange();
-      this._filmPopup = new FilmDetails(this._filmData, (newData) => {
-        this._onDataChange(this, newData, this._filmData);
-      });
+      this._filmPopup = new FilmDetails(this._filmData, this._onDataChange);
 
       renderElement(document.querySelector(`body`), this._filmPopup);
       this._filmPopup.setCloseClickHandler(this._closePopup);
@@ -45,17 +45,26 @@ export default class MovieController {
 
     this._filmCard.setWatchlistButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, Object.assign({}, this._filmData, {isAtWatchlist: !this._filmData.isAtWatchlist}));
+      this._onDataChange(Object.assign({}, this._filmData, {isAtWatchlist: !this._filmData.isAtWatchlist}))
+        .catch(() => {
+          this.shake();
+        });
     });
 
     this._filmCard.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, Object.assign({}, this._filmData, {isWatched: this._filmData.isWatched ? null : moment()}));
+      this._onDataChange(Object.assign({}, this._filmData, {isWatched: this._filmData.isWatched ? null : moment()}))
+        .catch(() => {
+          this.shake();
+        });
     });
 
     this._filmCard.setFavoriteButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, Object.assign({}, this._filmData, {isFavorite: !this._filmData.isFavorite}));
+      this._onDataChange(Object.assign({}, this._filmData, {isFavorite: !this._filmData.isFavorite}))
+      .catch(() => {
+        this.shake();
+      });
     });
   }
 
@@ -73,5 +82,13 @@ export default class MovieController {
 
   removeCard() {
     removeElement(this._filmCard);
+  }
+
+  shake() {
+    this._filmCard.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._filmCard.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
