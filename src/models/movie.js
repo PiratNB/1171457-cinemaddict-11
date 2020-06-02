@@ -51,7 +51,7 @@ export default class Movie {
       },
       'user_details': {
         'already_watched': !!data.isWatched,
-        'watching_date': data.isWatched,
+        'watching_date': null,
         'watchlist': data.isAtWatchlist,
         'favorite': data.isFavorite
       }

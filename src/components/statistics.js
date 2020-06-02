@@ -60,7 +60,7 @@ export default class Statistics extends AbstractSmartComponent {
     const filmsWatchedDuration = this._films.reduce((acc, it) => {
       return acc + it.runtime;
     }, 0);
-    const topGenre = this._films.length ? this._chartData[0].genre : ``;
+    const topGenre = this._chartData.length ? this._chartData[0].genre : ``;
     const userRank = topGenre ? USER_RANKS[topGenre] : ``;
 
     return `

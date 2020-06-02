@@ -158,6 +158,12 @@ export default class FilmDetails extends AbstractSmartComponent {
     updateFilmModel(`watched`, `isWatched`);
     updateFilmModel(`favorite`, `isFavorite`);
 
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
+      if (evt.target.tagName === `INPUT`) {
+        this._choosenEmoji = evt.target.value;
+        this._renderCommentEmoji();
+      }
+    });
 
     const keysPressed = new Set();
     const onInputKeydown = (evt) => {
