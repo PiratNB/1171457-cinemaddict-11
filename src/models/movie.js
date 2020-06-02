@@ -1,5 +1,6 @@
 import Comment from "./comment";
 import {GENRES} from "../utils/consts";
+import moment from "moment";
 
 const addGenres = (genres, allGenres) => {
   genres.forEach((it) => allGenres.add(it));
@@ -24,7 +25,8 @@ export default class Movie {
     this.comments = comments;
     this.isFavorite = filmData[`user_details`][`favorite`];
     this.isAtWatchlist = filmData[`user_details`][`watchlist`];
-    this.isWatched = filmData[`user_details`][`watching_date`];
+    const date = filmData[`user_details`][`watching_date`];
+    this.watchingDate = date ? moment(date) : null;
     addGenres(this.genres, GENRES);
   }
 
@@ -50,8 +52,8 @@ export default class Movie {
         'actors': data.actors
       },
       'user_details': {
-        'already_watched': !!data.isWatched,
-        'watching_date': data.isWatched,
+        'already_watched': !!data.watchingDate,
+        'watching_date': data.watchingDate,
         'watchlist': data.isAtWatchlist,
         'favorite': data.isFavorite
       }

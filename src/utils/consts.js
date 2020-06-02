@@ -18,7 +18,7 @@ export const USER_RANKS = {
   'Horror': `Exorcist`,
   'Adventure': `Indiana Jones`,
   'Fantasy': `Dreamer`,
-  'Science fiction': `Sci-Fighter`,
+  'Sci-Fi': `Sci-Fighter`,
   'Family': `Family Guy`,
   'Thriller': `Dracula`,
   'Animation': `Otaku`

@@ -26,29 +26,38 @@ export default class API {
   getFilms() {
     return this._load({url: `movies`})
       .then((response) => response.json())
-      .then((Movie.parseMovies));
+      .then((films) => {
+        const promises = films.map((it) => this.getComments(it.id));
+        return Promise.all(promises)
+          .then((comments) => {
+            return Movie.parseFilms(films, comments);
+          });
+      });
   }
 
-  updateFilm(id, movie) {
+  updateFilm(data) {
     return this._load({
-      url: `movies/${id}`,
+      url: `movies/${data.id}`,
       method: Method.PUT,
-      body: JSON.stringify(movie.toRAW()),
+      body: JSON.stringify(Movie.toRaw(data)),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
-      .then((Movie.parseMovie));
+      .then((film) => {
+        return this.getComments(film.id)
+          .then((comments) => Movie.parseFilm(film, comments));
+      });
   }
 
   postComment(filmId, newCommentData) {
     return this._load({
       url: `comments/${filmId}`,
       method: Method.POST,
-      body: JSON.stringify(newCommentData.toRAW()),
+      body: JSON.stringify(Comment.toRaw(newCommentData)),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
-      .then((Comment.parseUpdatedComments));
+      .then(({movie, comments}) => Movie.parseFilm(movie, comments));
   }
 
   deleteComment(commentId) {
@@ -60,8 +69,7 @@ export default class API {
 
   getComments(filmId) {
     return this._load({url: `comments/${filmId}`})
-      .then((response) => response.json())
-      .then((Comment.parseComments));
+      .then((response) => response.json());
   }
 
   sync(movies) {

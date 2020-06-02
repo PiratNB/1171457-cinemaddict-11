@@ -1,7 +1,7 @@
 import AbstractComponent from "./abstract-component";
 import moment from "moment";
 
-const createFilmCard = ({name, posterImage, rating, releaseDate, runtime, genres, description, comments, isFavorite, isAtWatchlist, isWatched}) => {
+const createFilmCard = ({name, posterImage, rating, releaseDate, runtime, genres, description, comments, isFavorite, isAtWatchlist, watchingDate}) => {
   const releaseYear = moment(releaseDate).year();
   const filmDuration = `${moment.duration(runtime, `minutes`).hours()}h ${moment.duration(runtime, `minutes`).minutes()}m`;
   const shortDescription = description.length > 140 ? `${description.slice(0, 139)}&#8230` : description;
@@ -20,7 +20,7 @@ const createFilmCard = ({name, posterImage, rating, releaseDate, runtime, genres
     <a class="film-card__comments">${comments.length} comment${comments.length > 1 ? `s` : ``}</a>
     <form class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isAtWatchlist ? `film-card__controls-item--active` : ``}">Add to watchlist</button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isWatched ? `film-card__controls-item--active` : ``}">Mark as watched</button>
+      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${watchingDate ? `film-card__controls-item--active` : ``}">Mark as watched</button>
       <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavorite ? `film-card__controls-item--active` : ``}">Mark as favorite</button>
     </form>
   </article>`
