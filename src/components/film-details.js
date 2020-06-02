@@ -178,7 +178,7 @@ export default class FilmDetails extends AbstractSmartComponent {
         evt.preventDefault();
       }
       keysPressed.add(evt.code);
-      for (let code of [`ControlLeft`, `Enter`]) {
+      for (const code of [`ControlLeft`, `Enter`]) {
         if (!keysPressed.has(code)) {
           return;
         }
