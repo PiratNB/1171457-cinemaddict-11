@@ -17,7 +17,7 @@ export const getFilmsByFilter = (films, filterType) => {
     case FILTER_TYPE.WATCHLIST:
       return films.filter((it) => it.isAtWatchlist);
     case FILTER_TYPE.HISTORY:
-      return films.filter((it) => it.isWatched);
+      return films.filter((it) => it.watchingDate);
     case FILTER_TYPE.FAVORITES:
       return films.filter((it) => it.isFavorite);
     default:

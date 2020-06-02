@@ -72,7 +72,7 @@ export default class PageController {
     this._renderFilmsPack(this._topRatedFilmsListContainer, this._filmsModel.getAllMovies().slice(0).sort((a, b) => b.rating - a.rating).slice(0, FILMS_EXTRA_TO_RENDER));
     this._renderFilmsPack(this._mostCommentedFilmsListContainer, this._filmsModel.getAllMovies().slice(0).sort((a, b) => b.comments.length - a.comments.length).slice(0, FILMS_EXTRA_TO_RENDER));
     this._filmRenderedCount = count;
-    this._userLevel.updateUserLevel(this._filmsModel.getAllMovies().filter((it) => it.isWatched).length);
+    this._userLevel.updateUserLevel(this._filmsModel.getAllMovies().filter((it) => it.watchingDate).length);
     this._renderLoadmoreButton();
   }
 

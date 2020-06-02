@@ -53,7 +53,7 @@ export default class MovieController {
 
     this._filmCard.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(Object.assign({}, this._filmData, {isWatched: this._filmData.isWatched ? null : moment()}))
+      this._onDataChange(Object.assign({}, this._filmData, {watchingDate: this._filmData.watchingDate ? null : moment()}))
         .catch(() => {
           this.shake();
         });

@@ -107,7 +107,7 @@ export default class FilmDetails extends AbstractSmartComponent {
           <section class="film-details__controls">
             <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${this._film.isAtWatchlist ? `checked` : ``}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${this._film.isWatched ? `checked` : ``}>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${this._film.watchingDate ? `checked` : ``}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
             <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${this._film.isFavorite ? `checked` : ``}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
@@ -155,8 +155,15 @@ export default class FilmDetails extends AbstractSmartComponent {
     };
 
     updateFilmModel(`watchlist`, `isAtWatchlist`);
-    updateFilmModel(`watched`, `isWatched`);
     updateFilmModel(`favorite`, `isFavorite`);
+
+    this.getElement().querySelector(`input#watched`).addEventListener(`change`, (evt) => {
+      const watchingDate = evt.target.checked ? moment() : null;
+      this._onDataChange(Object.assign({}, this._film, {watchingDate}))
+        .then((newFilmModel) => {
+          this._film = newFilmModel;
+        });
+    });
 
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, (evt) => {
       if (evt.target.tagName === `INPUT`) {

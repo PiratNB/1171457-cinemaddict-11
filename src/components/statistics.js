@@ -39,7 +39,7 @@ const getFilteredFilms = (films, filter) => {
     return films;
   }
   return films.filter((it) => {
-    return Math.abs(moment(it.isWatched).diff(moment(), FILTERS[filter])) < 1;
+    return Math.abs(moment(it.watchingDate).diff(moment(), FILTERS[filter])) < 1;
   });
 };
 
@@ -48,7 +48,7 @@ export default class Statistics extends AbstractSmartComponent {
     super();
 
     this._filmsModel = filmsModel;
-    this._films = this._filmsModel.getMovies().filter((it) => it.isWatched);
+    this._films = this._filmsModel.getMovies().filter((it) => it.watchingDate);
 
     this._chart = null;
     this._currentFilter = DEFAULT_FILTER;
@@ -99,7 +99,7 @@ export default class Statistics extends AbstractSmartComponent {
   }
 
   rerender() {
-    this._films = getFilteredFilms(this._filmsModel.getMovies().filter((it) => it.isWatched), this._currentFilter);
+    this._films = getFilteredFilms(this._filmsModel.getMovies().filter((it) => it.watchingDate), this._currentFilter);
     this._chartData = countFilmsByGenre(this._films);
 
     super.rerender();
