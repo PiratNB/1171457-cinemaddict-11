@@ -97,7 +97,7 @@ export default class PageController {
   _getSortedFilms() {
     switch (this._currentSortType) {
       case SORT_TYPE.DATE:
-        return this._filmsModel.getMovies().slice().sort((a, b) => (a.releaseDate).localeCompare(b.releaseDate));
+        return this._filmsModel.getMovies().slice().sort((a, b) => (b.releaseDate).localeCompare(a.releaseDate));
       case SORT_TYPE.RATING:
         return this._filmsModel.getMovies().slice().sort((a, b) => b.rating - a.rating);
       default:
