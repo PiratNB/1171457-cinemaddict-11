@@ -3,17 +3,17 @@ import moment from "moment";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AbstractSmartComponent from "./abstract-smart-component";
-import {GENRES, USER_RANKS} from "../utils/consts";
+import {GENRES, UserRanks} from "../utils/consts";
 import {capitalizeFirstLetter} from "../utils/utils";
 
 const BAR_HEIGHT = 50;
 const DEFAULT_FILTER = `all-time`;
-const FILTERS = {
-  'all-time': `all`,
-  'today': `days`,
-  'week': `weeks`,
-  'month': `months`,
-  'year': `years`
+const Filters = {
+  'all-time': `All`,
+  'today': `Days`,
+  'week': `Weeks`,
+  'month': `Months`,
+  'year': `Years`
 };
 
 const countFilmsByGenre = (films) => {
@@ -39,7 +39,7 @@ const getFilteredFilms = (films, filter) => {
     return films;
   }
   return films.filter((it) => {
-    return Math.abs(moment(it.watchingDate).diff(moment(), FILTERS[filter])) < 1;
+    return Math.abs(moment(it.watchingDate).diff(moment(), Filters[filter])) < 1;
   });
 };
 
@@ -61,7 +61,7 @@ export default class Statistics extends AbstractSmartComponent {
       return acc + it.runtime;
     }, 0);
     const topGenre = this._chartData.length ? this._chartData[0].genre : ``;
-    const userRank = topGenre ? USER_RANKS[topGenre] : ``;
+    const userRank = topGenre ? UserRanks[topGenre] : ``;
 
     return `
       <section class="statistic">
@@ -72,7 +72,7 @@ export default class Statistics extends AbstractSmartComponent {
         </p>
         <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
           <p class="statistic__filters-description">Show stats:</p>
-          ${Object.keys(FILTERS).map((it) => `
+          ${Object.keys(Filters).map((it) => `
             <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${it}" value="${it}"${it === this._currentFilter ? ` checked` : ``}>
             <label for="statistic-${it}" class="statistic__filters-label">${it === DEFAULT_FILTER ? `All time` : capitalizeFirstLetter(it)}</label>
           `).join(``)}

@@ -1,7 +1,7 @@
 const FILMS_TO_RENDER = 5;
 const FILMS_EXTRA_TO_RENDER = 2;
 
-import Sort, {SORT_TYPE} from "../components/sort";
+import Sort, {SortType} from "../components/sort";
 import FilmList from "../components/film-list";
 import RateCommented from "../components/rate-commented";
 import BtnShowMore from "../components/btn-show-more";
@@ -32,7 +32,7 @@ export default class PageController {
     this._onFilterChange = this._onFilterChange.bind(this);
     this._filmRenderedCount = null;
     this._filmsRendered = [];
-    this._currentSortType = SORT_TYPE.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
 
     this._filmsModel.setFilterChangeHandler(this._onFilterChange);
   }
@@ -96,9 +96,9 @@ export default class PageController {
 
   _getSortedFilms() {
     switch (this._currentSortType) {
-      case SORT_TYPE.DATE:
+      case SortType.DATE:
         return this._filmsModel.getMovies().slice().sort((a, b) => (b.releaseDate).localeCompare(a.releaseDate));
-      case SORT_TYPE.RATING:
+      case SortType.RATING:
         return this._filmsModel.getMovies().slice().sort((a, b) => b.rating - a.rating);
       default:
         return this._filmsModel.getMovies();
@@ -150,7 +150,7 @@ export default class PageController {
 
   _onFilterChange() {
     this._sortingControl.reset();
-    this._currentSortType = SORT_TYPE.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
     this._updateFilms(FILMS_TO_RENDER);
   }
 

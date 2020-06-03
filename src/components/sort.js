@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component";
 
-export const SORT_TYPE = {
+export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
   RATING: `rating`
@@ -10,9 +10,9 @@ export const SORT_TYPE = {
 const createSort = () => {
   return (
     `<ul class="sort">
-    <li><a href="#" data-sort-type="${SORT_TYPE.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
-    <li><a href="#" data-sort-type="${SORT_TYPE.DATE}" class="sort__button">Sort by date</a></li>
-    <li><a href="#" data-sort-type="${SORT_TYPE.RATING}" class="sort__button">Sort by rating</a></li>
+    <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
+    <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">Sort by date</a></li>
+    <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">Sort by rating</a></li>
   </ul>`
   );
 };
@@ -22,7 +22,7 @@ export default class Sort extends AbstractComponent {
   constructor() {
     super();
 
-    this._currentSortType = SORT_TYPE.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
   }
 
   getTemplate() {
@@ -49,7 +49,7 @@ export default class Sort extends AbstractComponent {
   }
 
   reset() {
-    this._currentSortType = SORT_TYPE.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
     this._element.querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
     this._element.querySelector(`:first-child a`).classList.add(`sort__button--active`);
   }

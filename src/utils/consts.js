@@ -8,7 +8,7 @@ export const FILTER_TYPE = {
   FAVORITES: `favorites`
 };
 
-export const USER_RANKS = {
+export const UserRanks = {
   'Drama': `Melancholic`,
   'Mystery': `Enigma`,
   'Comedy': `Clown`,
