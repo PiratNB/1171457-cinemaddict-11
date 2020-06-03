@@ -58,7 +58,7 @@ export default class PageController {
       renderElement(this._filmsSection.getElement(), this._mostCommentedFilms);
       this._mostCommentedFilmsContainer = this._mostCommentedFilms.getElement().lastElementChild;
 
-      this._sortingControl.setSortTypeChooseHandler((sortTypeChosen) => {
+      this._sortingControl.setTypeChooseHandler((sortTypeChosen) => {
         this._currentSortType = sortTypeChosen;
         this._updateFilms(FILMS_TO_RENDER);
       });

@@ -29,7 +29,7 @@ export default class Sort extends AbstractComponent {
     return createSort();
   }
 
-  setSortTypeChooseHandler(handler) {
+  setTypeChooseHandler(handler) {
     this._element.addEventListener(`click`, (evt) => {
       evt.preventDefault();
       if (evt.target.tagName !== `A`) {
