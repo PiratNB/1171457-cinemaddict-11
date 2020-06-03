@@ -2,7 +2,7 @@ const FILMS_TO_RENDER = 5;
 const FILMS_EXTRA_TO_RENDER = 2;
 
 import Sort, {SortType} from "../components/sort";
-import Film from "../components/film-list";
+import FilmList from "../components/film-list";
 import RateCommented from "../components/rate-commented";
 import BtnShowMore from "../components/btn-show-more";
 import MovieController from "./movie-controller";
@@ -18,7 +18,7 @@ export default class PageController {
     this._userLevel = new ProfileUser();
     this._filterController = new FilterController(this._container, this._filmsModel);
     this._sortingControl = new Sort();
-    this._filmsSection = new Film();
+    this._filmsSection = new FilmList();
     this._allFilms = null;
     this._mainFilmsContainer = null;
     this._topRatedFilmsContainer = null;
@@ -72,17 +72,17 @@ export default class PageController {
     this._renderFilmsPack(this._topRatedFilmsContainer, this._filmsModel.getAllMovies().slice(0).sort((a, b) => b.rating - a.rating).slice(0, FILMS_EXTRA_TO_RENDER));
 
 
-    const filmsByCommentsNumber = this._filmsModel.getAllMovies().slice().sort((a, b) => b.comments.length - a.comments.length);
-    if (filmsByCommentsNumber[0].comments.length > 0) {
+    const filmsByCommentsСount = this._filmsModel.getAllMovies().slice().sort((a, b) => b.comments.length - a.comments.length);
+    if (filmsByCommentsСount[0].comments.length > 0) {
       this._renderFilmsPack(
           this._mostCommentedFilmsContainer,
-          filmsByCommentsNumber.slice(0, 1)
+          filmsByCommentsСount.slice(0, 1)
       );
     }
-    if (filmsByCommentsNumber[1].comments.length > 0) {
+    if (filmsByCommentsСount[1].comments.length > 0) {
       this._renderFilmsPack(
           this._mostCommentedFilmsContainer,
-          filmsByCommentsNumber.slice(1, 2)
+          filmsByCommentsСount.slice(1, 2)
       );
     }
 

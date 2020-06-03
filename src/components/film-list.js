@@ -6,7 +6,7 @@ const createFilms = () => {
   );
 };
 
-export default class Film extends AbstractComponent {
+export default class FilmList extends AbstractComponent {
 
   getTemplate() {
     return createFilms();
