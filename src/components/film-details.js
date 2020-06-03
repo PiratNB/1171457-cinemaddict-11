@@ -23,7 +23,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     const releaseDate = moment(this._film.releaseDate).format(`D MMMM YYYY`);
     const filmDuration = `${moment.duration(this._film.runtime, `minutes`).hours()}h ${moment.duration(this._film.runtime, `minutes`).minutes()}m`;
     const filmGenres = this._film.genres.map((it) => `<span class="film-details__genre">${it}</span>`).join(` `);
-    const commentsList = this._film.comments.map((it) => `
+    const comments = this._film.comments.map((it) => `
                 <li class="film-details__comment">
                   <span class="film-details__comment-emoji">
                     <img src="./images/emoji/${it.emotion}.png" width="55" height="55" alt="emoji-${it.emotion}">
@@ -38,7 +38,7 @@ export default class FilmDetails extends AbstractSmartComponent {
                   </div>
                 </li>
               `).join(``);
-    const emotionsList = COMMENT_EMOTIONS.map((it) => `
+    const emotions = COMMENT_EMOTIONS.map((it) => `
                   <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${it}" value="${it}">
                   <label class="film-details__emoji-label" for="emoji-${it}">
                     <img src="./images/emoji/${it}.png" width="30" height="30" alt="emoji">
@@ -117,7 +117,7 @@ export default class FilmDetails extends AbstractSmartComponent {
           <section class="film-details__comments-wrap">
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._film.comments.length}</span></h3>
             <ul class="film-details__comments-list">
-              ${commentsList}
+              ${comments}
             </ul>
             <div class="film-details__new-comment">
               <div for="add-emoji" class="film-details__add-emoji-label">
@@ -126,7 +126,7 @@ export default class FilmDetails extends AbstractSmartComponent {
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
               </label>
               <div class="film-details__emoji-list">
-                ${emotionsList}
+                ${emotions}
               </div>
             </div>
           </section>
@@ -205,8 +205,8 @@ export default class FilmDetails extends AbstractSmartComponent {
           evt.target.disabled = true;
           evt.target.textContent = `Deleting...`;
           const oldComment = this._film.comments[i];
-          const newCommentList = [...this._film.comments.slice(0, i), ...this._film.comments.slice(i + 1)];
-          this._film = Object.assign({}, this._film, {comments: newCommentList});
+          const newComment = [...this._film.comments.slice(0, i), ...this._film.comments.slice(i + 1)];
+          this._film = Object.assign({}, this._film, {comments: newComment});
           this._onDataChange(Object.assign({}, this._film), oldComment)
             .then((newFilmModel) => {
               this._film = newFilmModel;
@@ -231,8 +231,8 @@ export default class FilmDetails extends AbstractSmartComponent {
         postDate: moment().toISOString(),
         id: nanoid()
       };
-      const newCommentList = [...this._film.comments, newComment];
-      const updatedFilm = Object.assign({}, this._film, {comments: newCommentList});
+      const newComments = [...this._film.comments, newComment];
+      const updatedFilm = Object.assign({}, this._film, {comments: newComments});
       this._choosenEmoji = null;
       this._onDataChange(updatedFilm, newComment)
         .then((newFilmModel) => {

@@ -1,10 +1,10 @@
 import {FILTER_TYPE} from "./consts";
 
-export const getRandomElementOfArray = (arr) => {
+export const getRandomElement = (arr) => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
-export const getRandomizedReducedArray = (arr, count) => {
+export const getRandomizedReduced = (arr, count) => {
   return arr.slice(0).sort(() => Math.random() - 0.5).slice(0, count);
 };
 

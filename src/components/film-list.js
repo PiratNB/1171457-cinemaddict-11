@@ -1,14 +1,14 @@
 import AbstractComponent from "./abstract-component";
 
-const createFilmsList = () => {
+const createFilms = () => {
   return (
     `<section class="films"></section>`
   );
 };
 
-export default class FilmList extends AbstractComponent {
+export default class Film extends AbstractComponent {
 
   getTemplate() {
-    return createFilmsList();
+    return createFilms();
   }
 }
