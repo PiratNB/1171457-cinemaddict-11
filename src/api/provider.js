@@ -11,6 +11,8 @@ export default class Provider {
     this._filmStore = filmStore;
     this._commentsStore = commentsStore;
     this._syncNeeded = false;
+    this._commentsToPost = [];
+    this._commentsToDelete = [];
   }
 
   getFilms() {
