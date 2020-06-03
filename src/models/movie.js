@@ -30,32 +30,32 @@ export default class Movie {
     addGenres(this.genres, GENRES);
   }
 
-  static toRaw(data) {
+  static toRaw(film) {
     return {
-      'id': data.id,
-      'comments': data.comments.map((it) => it.id),
+      'id': film.id,
+      'comments': film.comments.map((it) => it.id),
       'film_info': {
-        'alternative_title': data.name,
-        'title': data.originalName,
-        'description': data.description,
-        'poster': data.posterImage,
-        'genre': data.genres,
-        'runtime': data.runtime,
+        'alternative_title': film.name,
+        'title': film.originalName,
+        'description': film.description,
+        'poster': film.posterImage,
+        'genre': film.genres,
+        'runtime': film.runtime,
         'release': {
-          'date': data.releaseDate,
-          'release_country': data.country
+          'date': film.releaseDate,
+          'release_country': film.country
         },
-        'total_rating': data.rating,
-        'age_rating': data.ageRating,
-        'director': data.director,
-        'writers': data.writers,
-        'actors': data.actors
+        'total_rating': film.rating,
+        'age_rating': film.ageRating,
+        'director': film.director,
+        'writers': film.writers,
+        'actors': film.actors
       },
       'user_details': {
-        'already_watched': !!data.watchingDate,
-        'watching_date': data.watchingDate,
-        'watchlist': data.isAtWatchlist,
-        'favorite': data.isFavorite
+        'already_watched': !!film.watchingDate,
+        'watching_date': film.watchingDate,
+        'watchlist': film.isAtWatchlist,
+        'favorite': film.isFavorite
       }
     };
   }

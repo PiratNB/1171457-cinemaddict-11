@@ -41,9 +41,9 @@ export default class Provider {
     return Promise.resolve(Movie.parseFilms(storeFilms, storeComments));
   }
 
-  updateFilm(data) {
+  updateFilm(filmCard) {
     if (isOnline()) {
-      return this._api.updateFilm(data)
+      return this._api.updateFilm(filmCard)
         .then((filmModel) => {
           this._filmStore.setItem(filmModel.id, Movie.toRaw(filmModel));
 
@@ -53,9 +53,9 @@ export default class Provider {
 
     this._syncNeeded = true;
 
-    const localFilm = Object.assign({}, data);
+    const localFilm = Object.assign({}, filmCard);
 
-    this._filmStore.setItem(data.id, Movie.toRaw(localFilm));
+    this._filmStore.setItem(filmCard.id, Movie.toRaw(localFilm));
 
     return Promise.resolve(localFilm);
   }

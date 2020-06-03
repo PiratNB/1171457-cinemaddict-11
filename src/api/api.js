@@ -35,11 +35,11 @@ export default class API {
       });
   }
 
-  updateFilm(data) {
+  updateFilm(filmCard) {
     return this._load({
-      url: `movies/${data.id}`,
+      url: `movies/${filmCard.id}`,
       method: Method.PUT,
-      body: JSON.stringify(Movie.toRaw(data)),
+      body: JSON.stringify(Movie.toRaw(filmCard)),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
