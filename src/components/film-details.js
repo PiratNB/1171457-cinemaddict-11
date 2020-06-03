@@ -178,10 +178,11 @@ export default class FilmDetails extends AbstractSmartComponent {
         evt.preventDefault();
       }
       keysPressed.add(evt.code);
-      for (const code of [`ControlLeft`, `Enter`]) {
-        if (!keysPressed.has(code)) {
-          return;
-        }
+      const ctrlKeys = [`ControlLeft`, `ControlRight`, `MetaRight`, `MetaLeft`];
+      const hasCtrl = ctrlKeys.some((code) => keysPressed.has(code));
+      const hasEnter = keysPressed.has(`Enter`);
+      if (!hasEnter || !hasCtrl) {
+        return;
       }
       keysPressed.clear();
       this._onCommentSubmit();
